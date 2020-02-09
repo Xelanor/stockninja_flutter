@@ -65,7 +65,7 @@ class _StockDetailsScreenState extends State<StockDetailsScreen> {
   }
 
   String rateCalculator(price, prevClose) {
-    var rate = (((price - prevClose) / prevClose) * 100).toStringAsFixed(3);
+    var rate = (((price - prevClose) / prevClose) * 100).toStringAsFixed(2);
     return rate;
   }
 
@@ -149,7 +149,7 @@ class _StockDetailsScreenState extends State<StockDetailsScreen> {
                                               color: Colors.white60),
                                         ),
                                         Text(
-                                          'TL ${_stockDetails['price'].toStringAsFixed(4)}',
+                                          'TL ${_stockDetails['price'].toStringAsFixed(2)}',
                                           style: TextStyle(
                                               fontSize: 32,
                                               color: Colors.white,
@@ -170,7 +170,7 @@ class _StockDetailsScreenState extends State<StockDetailsScreen> {
                                                 color: Colors.white60),
                                           ),
                                           Text(
-                                            'TL ${_stockDetails['prevClose'].toStringAsFixed(5)}',
+                                            'TL ${_stockDetails['prevClose'].toStringAsFixed(2)}',
                                             style: TextStyle(
                                                 fontSize: 24,
                                                 color: Colors.white),
