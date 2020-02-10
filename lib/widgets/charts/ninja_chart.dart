@@ -2,12 +2,13 @@ import 'package:charts_flutter/flutter.dart' as charts;
 import 'package:flutter/material.dart';
 
 class NinjaChart extends StatelessWidget {
-  final List<dynamic> data;
+  List<dynamic> data;
 
   NinjaChart(this.data);
 
   @override
   Widget build(BuildContext context) {
+    data = data.map((d) => d * 100).toList();
     List<charts.Series<dynamic, int>> series = [
       charts.Series(
         id: "Ninja",
