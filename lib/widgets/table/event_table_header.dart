@@ -47,8 +47,22 @@ class EventTableHeader extends StatelessWidget {
           Expanded(
             child: Container(
               color: Theme.of(context).colorScheme.background,
+              child: FittedBox(
+                child: Text(
+                  "Değişmeyen",
+                  style: TextStyle(color: Colors.white60),
+                ),
+              ),
+              height: 30,
+              alignment: Alignment.center,
+            ),
+            flex: 20,
+          ),
+          Expanded(
+            child: Container(
+              color: Theme.of(context).colorScheme.background,
               child: Text(
-                "Değişmeyen",
+                "BIST",
                 style: TextStyle(color: Colors.white60),
               ),
               height: 30,

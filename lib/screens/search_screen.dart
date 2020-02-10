@@ -76,8 +76,7 @@ class _SearchScreenState extends State<SearchScreen> {
   }
 
   Future<void> refresh() {
-    const url =
-        'https://j4v2h2jt8b.execute-api.us-west-2.amazonaws.com/dev/ninja/all_ticker_details';
+    const url = 'http://34.67.211.44/api/all_ticker_details';
     http.get(url).then(
       (response) {
         final extractedData = json.decode(response.body) as List<dynamic>;

@@ -19,15 +19,19 @@ class EventTableRow extends StatelessWidget {
             flex: 30,
           ),
           Expanded(
-            child: EventTableIntCell(stock['decreasing'].toString()),
+            child: EventTableIntCell('% ${stock["decreasing"]}'),
             flex: 20,
           ),
           Expanded(
-            child: EventTableIntCell(stock['increasing'].toString()),
+            child: EventTableIntCell('% ${stock["increasing"]}'),
             flex: 20,
           ),
           Expanded(
-            child: EventTableIntCell(stock['same'].toString()),
+            child: EventTableIntCell('% ${stock["same"]}'),
+            flex: 20,
+          ),
+          Expanded(
+            child: EventTableIntCell('${stock["bist"].toStringAsFixed(0)}'),
             flex: 20,
           ),
         ],

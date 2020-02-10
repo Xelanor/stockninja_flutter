@@ -62,14 +62,31 @@ class _GlobalScreenState extends State<GlobalScreen> {
             children: <Widget>[
               EventTableHeader(),
               Expanded(
-                child: ListView.builder(
-                  physics: BouncingScrollPhysics(),
-                  itemCount: _events.length,
-                  itemBuilder: (_, i) => EventTableRow(_events[i]),
+                child: RefreshIndicator(
+                  onRefresh: refresh,
+                  child: ListView.builder(
+                    physics: BouncingScrollPhysics(),
+                    itemCount: _events.length,
+                    itemBuilder: (_, i) => EventTableRow(_events[i]),
+                  ),
                 ),
               ),
             ],
           );
-    ;
+  }
+
+  Future<void> refresh() {
+    const url = 'http://34.67.211.44/api/change';
+    http.get(url).then(
+      (response) {
+        final extractedData = json.decode(response.body) as List<dynamic>;
+        setState(() {
+          _events = extractedData;
+        });
+      },
+    ).catchError((err) {
+      print(err);
+    });
+    return Future.value();
   }
 }

@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:onesignal_flutter/onesignal_flutter.dart';
 
 import '../widgets/table/stock_table_header.dart';
 import '../widgets/table/stock_table_row.dart';
@@ -17,6 +18,35 @@ class _HomepageScreenState extends State<HomepageScreen> {
   var _isInit = true;
   var _isLoading = false;
   var _myStocks = [];
+
+  @override
+  void initState() {
+    super.initState();
+    initPlatformState();
+  }
+
+  Future<void> initPlatformState() async {
+    await OneSignal.shared.init("9c10c48a-a1b3-4d23-8f2c-d9adb16f38fc",
+        iOSSettings: {
+          OSiOSSettings.autoPrompt: false,
+          OSiOSSettings.inAppLaunchUrl: true
+        });
+
+    OneSignal.shared
+        .setInFocusDisplayType(OSNotificationDisplayType.notification);
+
+    // OneSignal.shared
+    //     .setNotificationReceivedHandler((OSNotification notification) {
+    //   print("new notif");
+    //   print(notification);
+    // });
+
+    // OneSignal.shared
+    //     .setNotificationOpenedHandler((OSNotificationOpenedResult result) {
+    //   print("opened notif");
+    //   print(result);
+    // });
+  }
 
   void getMyStocks() {
     var now = DateTime.now();
