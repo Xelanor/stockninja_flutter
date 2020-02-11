@@ -1,7 +1,7 @@
 import 'package:charts_flutter/flutter.dart' as charts;
 import 'package:flutter/material.dart';
 
-class TripleChart extends StatelessWidget {
+class TripleChart extends StatefulWidget {
   final List<dynamic> closes;
   final List<dynamic> first_list;
   final List<dynamic> second_list;
@@ -10,11 +10,43 @@ class TripleChart extends StatelessWidget {
   TripleChart(this.closes, this.first_list, this.second_list, this.third_list);
 
   @override
+  _TripleChartState createState() => _TripleChartState();
+}
+
+class _TripleChartState extends State<TripleChart> {
+  var _isInit = true;
+  var _duration = 1;
+  var _allCloses;
+  var _allFirst;
+  var _allSecond;
+  var _allThird;
+  var _closes;
+  var _first;
+  var _second;
+  var _third;
+
+  @override
+  void didChangeDependencies() {
+    if (_isInit) {
+      _allCloses = widget.closes;
+      _allFirst = widget.first_list;
+      _allSecond = widget.second_list;
+      _allThird = widget.third_list;
+      _closes = widget.closes.sublist(60, 90);
+      _first = widget.first_list.sublist(60, 90);
+      _second = widget.second_list.sublist(60, 90);
+      _third = widget.third_list.sublist(60, 90);
+    }
+    _isInit = false;
+    super.didChangeDependencies();
+  }
+
+  @override
   Widget build(BuildContext context) {
     List<charts.Series<dynamic, int>> series = [
       charts.Series(
         id: "Closes",
-        data: closes,
+        data: _closes,
         domainFn: (point, i) => i,
         measureFn: (point, i) => point,
         colorFn: (_, __) =>
@@ -22,21 +54,21 @@ class TripleChart extends StatelessWidget {
       ),
       charts.Series(
         id: "First",
-        data: first_list,
+        data: _first,
         domainFn: (point, i) => i,
         measureFn: (point, i) => point,
         colorFn: (_, __) => charts.ColorUtil.fromDartColor(Colors.green),
       ),
       charts.Series(
         id: "Second",
-        data: second_list,
+        data: _second,
         domainFn: (point, i) => i,
         measureFn: (point, i) => point,
         colorFn: (_, __) => charts.ColorUtil.fromDartColor(Colors.orange),
       ),
       charts.Series(
         id: "Third",
-        data: third_list,
+        data: _third,
         domainFn: (point, i) => i,
         measureFn: (point, i) => point,
         colorFn: (_, __) => charts.ColorUtil.fromDartColor(Colors.red),
@@ -82,6 +114,71 @@ class TripleChart extends StatelessWidget {
                 ),
               ),
             ),
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: <Widget>[
+              RaisedButton(
+                color: _duration == 1
+                    ? Theme.of(context).colorScheme.primaryVariant
+                    : Colors.white,
+                onPressed: () {
+                  setState(() {
+                    _closes = _allCloses.sublist(60, 90);
+                    _first = _allFirst.sublist(60, 90);
+                    _second = _allSecond.sublist(60, 90);
+                    _third = _allThird.sublist(60, 90);
+                    _duration = 1;
+                  });
+                },
+                child: Text(
+                  '1 AYLIK',
+                  style: TextStyle(
+                    color: _duration == 1 ? Colors.white : Colors.black,
+                  ),
+                ),
+              ),
+              RaisedButton(
+                color: _duration == 2
+                    ? Theme.of(context).colorScheme.primaryVariant
+                    : Colors.white,
+                onPressed: () {
+                  setState(() {
+                    _closes = _allCloses.sublist(30, 90);
+                    _first = _allFirst.sublist(30, 90);
+                    _second = _allSecond.sublist(30, 90);
+                    _third = _allThird.sublist(30, 90);
+                    _duration = 2;
+                  });
+                },
+                child: Text(
+                  '2 AYLIK',
+                  style: TextStyle(
+                    color: _duration == 2 ? Colors.white : Colors.black,
+                  ),
+                ),
+              ),
+              RaisedButton(
+                color: _duration == 3
+                    ? Theme.of(context).colorScheme.primaryVariant
+                    : Colors.white,
+                onPressed: () {
+                  setState(() {
+                    _closes = _allCloses.sublist(0, 90);
+                    _first = _allFirst.sublist(0, 90);
+                    _second = _allSecond.sublist(0, 90);
+                    _third = _allThird.sublist(0, 90);
+                    _duration = 3;
+                  });
+                },
+                child: Text(
+                  '3 AYLIK',
+                  style: TextStyle(
+                    color: _duration == 3 ? Colors.white : Colors.black,
+                  ),
+                ),
+              )
+            ],
           ),
         ],
       ),

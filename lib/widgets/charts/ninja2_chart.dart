@@ -1,17 +1,37 @@
 import 'package:charts_flutter/flutter.dart' as charts;
 import 'package:flutter/material.dart';
 
-class Ninja2Chart extends StatelessWidget {
+class Ninja2Chart extends StatefulWidget {
   final List<dynamic> data;
 
   Ninja2Chart(this.data);
+
+  @override
+  _Ninja2ChartState createState() => _Ninja2ChartState();
+}
+
+class _Ninja2ChartState extends State<Ninja2Chart> {
+  var _isInit = true;
+  var _duration = 1;
+  var _allData;
+  var _data;
+
+  @override
+  void didChangeDependencies() {
+    if (_isInit) {
+      _allData = widget.data;
+      _data = widget.data.sublist(60, 90);
+    }
+    _isInit = false;
+    super.didChangeDependencies();
+  }
 
   @override
   Widget build(BuildContext context) {
     List<charts.Series<dynamic, int>> series = [
       charts.Series(
         id: "Ninja2",
-        data: data,
+        data: _data,
         domainFn: (point, i) => i,
         measureFn: (point, i) => point,
         colorFn: (_, __) =>
@@ -19,7 +39,7 @@ class Ninja2Chart extends StatelessWidget {
       ),
       charts.Series(
         id: "Dummy1",
-        data: List.generate(90, (i) => 0),
+        data: List.generate(_data.length, (i) => 0),
         domainFn: (point, i) => i,
         measureFn: (point, i) => point,
         colorFn: (_, __) => charts.ColorUtil.fromDartColor(
@@ -66,6 +86,62 @@ class Ninja2Chart extends StatelessWidget {
                 ),
               ),
             ),
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: <Widget>[
+              RaisedButton(
+                color: _duration == 1
+                    ? Theme.of(context).colorScheme.primaryVariant
+                    : Colors.white,
+                onPressed: () {
+                  setState(() {
+                    _data = _allData.sublist(60, 90);
+                    _duration = 1;
+                  });
+                },
+                child: Text(
+                  '1 AYLIK',
+                  style: TextStyle(
+                    color: _duration == 1 ? Colors.white : Colors.black,
+                  ),
+                ),
+              ),
+              RaisedButton(
+                color: _duration == 2
+                    ? Theme.of(context).colorScheme.primaryVariant
+                    : Colors.white,
+                onPressed: () {
+                  setState(() {
+                    _data = _allData.sublist(30, 90);
+                    _duration = 2;
+                  });
+                },
+                child: Text(
+                  '2 AYLIK',
+                  style: TextStyle(
+                    color: _duration == 2 ? Colors.white : Colors.black,
+                  ),
+                ),
+              ),
+              RaisedButton(
+                color: _duration == 3
+                    ? Theme.of(context).colorScheme.primaryVariant
+                    : Colors.white,
+                onPressed: () {
+                  setState(() {
+                    _data = _allData.sublist(0, 90);
+                    _duration = 3;
+                  });
+                },
+                child: Text(
+                  '3 AYLIK',
+                  style: TextStyle(
+                    color: _duration == 3 ? Colors.white : Colors.black,
+                  ),
+                ),
+              )
+            ],
           ),
         ],
       ),

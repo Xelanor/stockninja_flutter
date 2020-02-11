@@ -31,7 +31,7 @@ class _StockDetailsScreenState extends State<StockDetailsScreen> {
   void getStockDetails() {
     var now = DateTime.now();
     var url =
-        'https://j4v2h2jt8b.execute-api.us-west-2.amazonaws.com/dev/ninja/single_ticker_details?stock=${widget.stockName}';
+        'http://34.67.211.44/api/single_ticker_details/${widget.stockName}';
     setState(() {
       _isLoading = true;
     });
