@@ -14,12 +14,13 @@ class StockTableIntCell extends StatelessWidget {
         text,
         textAlign: TextAlign.center,
         style: TextStyle(
+          fontSize: 16,
           color: increasing
               ? Theme.of(context).colorScheme.onSecondary
               : Theme.of(context).colorScheme.error,
         ),
       ),
-      height: 40,
+      height: 60,
       alignment: Alignment.center,
     );
   }

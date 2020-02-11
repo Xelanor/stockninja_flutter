@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
-class StockTableStrCell extends StatelessWidget {
+class EventTableStrCell extends StatelessWidget {
   final String text;
 
-  StockTableStrCell(this.text);
+  EventTableStrCell(this.text);
 
   @override
   Widget build(BuildContext context) {
@@ -14,12 +14,11 @@ class StockTableStrCell extends StatelessWidget {
           text,
           textAlign: TextAlign.center,
           style: TextStyle(
-            fontSize: 16,
             color: Colors.white,
           ),
         ),
       ),
-      height: 60,
+      height: 40,
       alignment: Alignment.center,
     );
   }

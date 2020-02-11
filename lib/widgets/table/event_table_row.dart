@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import './stock_table_str_cell.dart';
+import './event_table_str_cell.dart';
 import './event_table_int_cell.dart';
 
 class EventTableRow extends StatelessWidget {
@@ -15,7 +15,7 @@ class EventTableRow extends StatelessWidget {
       child: Row(
         children: [
           Expanded(
-            child: StockTableStrCell(stock['date']),
+            child: EventTableStrCell(stock['date']),
             flex: 30,
           ),
           Expanded(

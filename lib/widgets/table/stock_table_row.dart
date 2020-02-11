@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../screens/stock_details_screen.dart';
+import './stock_table_title_cell.dart';
 import './stock_table_str_cell.dart';
 import './stock_table_int_cell.dart';
 
@@ -27,7 +28,8 @@ class StockTableRow extends StatelessWidget {
         child: Row(
           children: [
             Expanded(
-              child: StockTableStrCell(stock['stockName']),
+              child:
+                  StockTableTitleCell(stock['stockName'], stock['shortName']),
               flex: 25,
             ),
             Expanded(
