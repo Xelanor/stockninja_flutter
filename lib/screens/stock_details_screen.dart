@@ -10,6 +10,8 @@ import '../widgets/charts/env_chart.dart';
 import '../widgets/charts/ninja_chart.dart';
 import '../widgets/charts/ninja2_chart.dart';
 
+import '../widgets/details/stock_target_modal.dart';
+
 class StockDetailsScreen extends StatefulWidget {
   final String stockName;
   final bool increasing;
@@ -27,6 +29,44 @@ class _StockDetailsScreenState extends State<StockDetailsScreen> {
   var _rate;
 
   Map<String, dynamic> _stockDetails = {};
+
+  void _setTarget(type, target) {
+    if (type == "buy") {
+      const url = "http://34.67.211.44/api/stock/setbuytarget";
+      http.post(url,
+          body: json.encode(
+              {'name': widget.stockName, 'target': target, 'prevTarget': 0}),
+          headers: {"Content-Type": "application/json"}).then((_) {
+        setState(() {
+          _stockDetails['buyTarget'] = target;
+        });
+      });
+    }
+
+    if (type == "sell") {
+      const url = "http://34.67.211.44/api/stock/setselltarget";
+      http.post(url,
+          body: json.encode(
+              {'name': widget.stockName, 'target': target, 'prevTarget': 0}),
+          headers: {"Content-Type": "application/json"}).then((_) {
+        setState(() {
+          _stockDetails['sellTarget'] = target;
+        });
+      });
+    }
+  }
+
+  void startAddNewTargets(BuildContext ctx) {
+    showModalBottomSheet(
+        context: ctx,
+        builder: (_) {
+          return GestureDetector(
+              onTap: () {
+                FocusScope.of(context).requestFocus(new FocusNode());
+              },
+              child: StockTargetModal(widget.stockName, _setTarget));
+        });
+  }
 
   void getStockDetails() {
     var now = DateTime.now();
@@ -76,6 +116,15 @@ class _StockDetailsScreenState extends State<StockDetailsScreen> {
       child: Scaffold(
         backgroundColor: Theme.of(context).colorScheme.background,
         appBar: AppBar(
+          actions: <Widget>[
+            IconButton(
+              icon: Icon(
+                Icons.add_box,
+                size: 35,
+              ),
+              onPressed: () => startAddNewTargets(context),
+            )
+          ],
           bottom: PreferredSize(
             preferredSize: Size(double.infinity, 30),
             child: TabBar(
@@ -123,9 +172,9 @@ class _StockDetailsScreenState extends State<StockDetailsScreen> {
                                   ? Theme.of(context).colorScheme.onSecondary
                                   : Theme.of(context).colorScheme.error,
                               borderRadius: BorderRadius.only(
-                                  bottomRight: Radius.circular(200),
+                                  bottomRight: Radius.circular(150),
                                   bottomLeft: Radius.circular(50))),
-                          height: 300,
+                          height: 320,
                           width: double.infinity,
                           child: Padding(
                             padding: EdgeInsets.symmetric(
@@ -181,36 +230,80 @@ class _StockDetailsScreenState extends State<StockDetailsScreen> {
                                   ],
                                 ),
                                 SizedBox(height: 28),
-                                Column(
+                                Row(
                                   crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
                                   children: <Widget>[
-                                    Text(
-                                      'Dünden bu yana',
-                                      style: TextStyle(
-                                          fontSize: 14, color: Colors.white60),
-                                    ),
-                                    Row(
+                                    Column(
                                       crossAxisAlignment:
-                                          CrossAxisAlignment.end,
+                                          CrossAxisAlignment.start,
                                       children: <Widget>[
                                         Text(
-                                          '% $_rate',
+                                          'Dünden bu yana',
                                           style: TextStyle(
+                                              fontSize: 14,
+                                              color: Colors.white60),
+                                        ),
+                                        Row(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.end,
+                                          children: <Widget>[
+                                            Text(
+                                              '% $_rate',
+                                              style: TextStyle(
+                                                  fontSize: 24,
+                                                  color: Colors.white,
+                                                  height: 1),
+                                            ),
+                                            Icon(
+                                              double.parse(_rate) >= 0
+                                                  ? Icons.arrow_upward
+                                                  : Icons.arrow_downward,
+                                              size: 32,
+                                            )
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                    Container(
+                                      margin: EdgeInsets.only(right: 15),
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: <Widget>[
+                                          Text(
+                                            'Alış Hedefi',
+                                            style: TextStyle(
+                                                fontSize: 14,
+                                                color: Colors.white60),
+                                          ),
+                                          Text(
+                                            'TL ${_stockDetails['buyTarget'].toStringAsFixed(2)}',
+                                            style: TextStyle(
                                               fontSize: 24,
                                               color: Colors.white,
-                                              height: 1),
-                                        ),
-                                        Icon(
-                                          double.parse(_rate) >= 0
-                                              ? Icons.arrow_upward
-                                              : Icons.arrow_downward,
-                                          size: 32,
-                                        )
-                                      ],
+                                            ),
+                                          ),
+                                          Text(
+                                            'Satış Hedefi',
+                                            style: TextStyle(
+                                                fontSize: 14,
+                                                color: Colors.white60),
+                                          ),
+                                          Text(
+                                            'TL ${_stockDetails['sellTarget'].toStringAsFixed(2)}',
+                                            style: TextStyle(
+                                              fontSize: 24,
+                                              color: Colors.white,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
                                     ),
                                   ],
                                 ),
-                                SizedBox(height: 40),
+                                SizedBox(height: 20),
                                 ButtonBar(
                                   buttonPadding: EdgeInsets.all(0),
                                   alignment: MainAxisAlignment.start,
@@ -260,7 +353,7 @@ class _StockDetailsScreenState extends State<StockDetailsScreen> {
                                         textTheme: ButtonTextTheme.primary,
                                         textColor: Colors.white,
                                       ),
-                                    )
+                                    ),
                                   ],
                                 ),
                               ],
