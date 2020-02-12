@@ -19,14 +19,12 @@ class _GlobalScreenState extends State<GlobalScreen> {
   var _events = [];
 
   void getEvents() {
-    var now = DateTime.now();
     const url = 'http://34.67.211.44/api/change';
     setState(() {
       _isLoading = true;
     });
     http.get(url).then(
       (response) {
-        print(DateTime.now().difference(now));
         final extractedData = json.decode(response.body) as List<dynamic>;
         setState(() {
           _isLoading = false;

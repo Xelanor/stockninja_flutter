@@ -37,7 +37,7 @@ class StockTableTitleCell extends StatelessWidget {
           ),
         ],
       ),
-      height: 60,
+      height: 50,
     );
   }
 }

@@ -5,7 +5,7 @@ import 'package:http/http.dart' as http;
 import 'package:onesignal_flutter/onesignal_flutter.dart';
 
 import '../widgets/table/stock_table_header.dart';
-import '../widgets/table/stock_table_row.dart';
+import '../widgets/table/stock_table_my_row.dart';
 
 class HomepageScreen extends StatefulWidget {
   static const routeName = '/homepage-screen';
@@ -18,6 +18,16 @@ class _HomepageScreenState extends State<HomepageScreen> {
   var _isInit = true;
   var _isLoading = false;
   var _myStocks = [];
+
+  void removeMyStock(stockName) {
+    const url = 'http://34.67.211.44/api/stock/delete';
+    var index =
+        _myStocks.indexWhere((stock) => stock['stockName'] == stockName);
+    setState(() {
+      _myStocks.removeAt(index);
+    });
+    http.post(url, body: {'name': stockName});
+  }
 
   @override
   void initState() {
@@ -49,14 +59,12 @@ class _HomepageScreenState extends State<HomepageScreen> {
   }
 
   void getMyStocks() {
-    var now = DateTime.now();
     const url = 'http://34.67.211.44/api/my_ticker_details';
     setState(() {
       _isLoading = true;
     });
     http.get(url).then(
       (response) {
-        print(DateTime.now().difference(now));
         final extractedData = json.decode(response.body) as List<dynamic>;
         setState(() {
           _isLoading = false;
@@ -97,7 +105,8 @@ class _HomepageScreenState extends State<HomepageScreen> {
                   child: ListView.builder(
                     physics: BouncingScrollPhysics(),
                     itemCount: _myStocks.length,
-                    itemBuilder: (_, i) => StockTableRow(_myStocks[i]),
+                    itemBuilder: (_, i) =>
+                        StockTableMyRow(_myStocks[i], removeMyStock),
                   ),
                 ),
               ),

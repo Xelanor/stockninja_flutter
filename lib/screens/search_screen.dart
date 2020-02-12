@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
 import '../widgets/table/stock_table_header.dart';
-import '../widgets/table/stock_table_row.dart';
+import '../widgets/table/stock_table_search_row.dart';
 
 class SearchScreen extends StatefulWidget {
   static const routeName = '/search-screen';
@@ -18,15 +18,18 @@ class _SearchScreenState extends State<SearchScreen> {
   var _isLoading = false;
   var _myStocks = [];
 
+  void addToMyStock(stockName) {
+    const url = 'http://34.67.211.44/api/stock/add';
+    http.post(url, body: {'name': stockName});
+  }
+
   void getMyStocks() {
-    var now = DateTime.now();
     const url = 'http://34.67.211.44/api/all_ticker_details';
     setState(() {
       _isLoading = true;
     });
     http.get(url).then(
       (response) {
-        print(DateTime.now().difference(now));
         final extractedData = json.decode(response.body) as List<dynamic>;
         setState(() {
           _isLoading = false;
@@ -67,7 +70,8 @@ class _SearchScreenState extends State<SearchScreen> {
                   child: ListView.builder(
                     physics: BouncingScrollPhysics(),
                     itemCount: _myStocks.length,
-                    itemBuilder: (_, i) => StockTableRow(_myStocks[i]),
+                    itemBuilder: (_, i) =>
+                        StockTableSearchRow(_myStocks[i], addToMyStock),
                   ),
                 ),
               ),

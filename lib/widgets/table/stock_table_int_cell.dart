@@ -20,7 +20,7 @@ class StockTableIntCell extends StatelessWidget {
               : Theme.of(context).colorScheme.error,
         ),
       ),
-      height: 60,
+      height: 50,
       alignment: Alignment.center,
     );
   }

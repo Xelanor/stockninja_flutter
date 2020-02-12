@@ -19,7 +19,7 @@ class StockTableStrCell extends StatelessWidget {
           ),
         ),
       ),
-      height: 60,
+      height: 50,
       alignment: Alignment.center,
     );
   }
