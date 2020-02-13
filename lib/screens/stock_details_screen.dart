@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
+import '../widgets/charts/intraday_chart.dart';
 import '../widgets/charts/closes_chart.dart';
 import '../widgets/charts/rsi_chart.dart';
 import '../widgets/charts/triple_chart.dart';
@@ -391,6 +392,7 @@ class _StockDetailsScreenState extends State<StockDetailsScreen> {
                             ),
                           ),
                         ),
+                        IntradayChart(_stockDetails['intraday']),
                         ClosesChart(_stockDetails['closes']),
                       ],
                     ),
