@@ -11,6 +11,7 @@ import '../widgets/charts/ninja_chart.dart';
 import '../widgets/charts/ninja2_chart.dart';
 
 import '../widgets/details/stock_target_modal.dart';
+import '../widgets/details/stock_transaction_modal.dart';
 
 class StockDetailsScreen extends StatefulWidget {
   final String stockName;
@@ -56,6 +57,18 @@ class _StockDetailsScreenState extends State<StockDetailsScreen> {
     }
   }
 
+  void _stockTransaction(type, price, amount) {
+    const url = "http://34.67.211.44/api/transaction/add";
+    http.post(url,
+        body: json.encode({
+          'name': widget.stockName,
+          'price': price,
+          'amount': amount,
+          'type': type
+        }),
+        headers: {"Content-Type": "application/json"}).then((_) {});
+  }
+
   void startAddNewTargets(BuildContext ctx) {
     showModalBottomSheet(
         context: ctx,
@@ -65,6 +78,19 @@ class _StockDetailsScreenState extends State<StockDetailsScreen> {
                 FocusScope.of(context).requestFocus(new FocusNode());
               },
               child: StockTargetModal(widget.stockName, _setTarget));
+        });
+  }
+
+  void startTransactionModal(BuildContext ctx, String type) {
+    showModalBottomSheet(
+        context: ctx,
+        builder: (_) {
+          return GestureDetector(
+              onTap: () {
+                FocusScope.of(context).requestFocus(new FocusNode());
+              },
+              child: StockTransactionModal(
+                  widget.stockName, _stockTransaction, type));
         });
   }
 
@@ -322,7 +348,9 @@ class _StockDetailsScreenState extends State<StockDetailsScreen> {
                                         shape: RoundedRectangleBorder(
                                             borderRadius:
                                                 BorderRadius.circular(20)),
-                                        onPressed: () {},
+                                        onPressed: () {
+                                          startTransactionModal(context, "buy");
+                                        },
                                         textTheme: ButtonTextTheme.primary,
                                         textColor: double.parse(_rate) >= 0
                                             ? Theme.of(context)
@@ -349,7 +377,10 @@ class _StockDetailsScreenState extends State<StockDetailsScreen> {
                                                 BorderRadius.circular(20)),
                                         borderSide:
                                             BorderSide(color: Colors.white30),
-                                        onPressed: () {},
+                                        onPressed: () {
+                                          startTransactionModal(
+                                              context, "sell");
+                                        },
                                         textTheme: ButtonTextTheme.primary,
                                         textColor: Colors.white,
                                       ),
