@@ -3,16 +3,24 @@ import 'package:flutter/material.dart';
 class StockTargetModal extends StatefulWidget {
   final String stockName;
   final Function setTarget;
+  final String currentPrice;
 
-  StockTargetModal(this.stockName, this.setTarget);
+  StockTargetModal(this.stockName, this.setTarget, this.currentPrice);
 
   @override
   _StockTargetModalState createState() => _StockTargetModalState();
 }
 
 class _StockTargetModalState extends State<StockTargetModal> {
-  final _buyTargetController = TextEditingController();
-  final _sellTargetController = TextEditingController();
+  var _buyTargetController;
+  var _sellTargetController;
+
+  @override
+  void initState() {
+    _buyTargetController = TextEditingController(text: widget.currentPrice);
+    _sellTargetController = TextEditingController(text: widget.currentPrice);
+    super.initState();
+  }
 
   void _submitData(type) {
     if (type == "buy") {

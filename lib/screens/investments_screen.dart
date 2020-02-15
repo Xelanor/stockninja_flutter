@@ -5,8 +5,24 @@ class InvestmentsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Text('Center'),
+    return Column(
+      children: <Widget>[
+        AppBar(
+          title: Text(
+            'Center',
+            style: TextStyle(
+                color: Theme.of(context).colorScheme.onBackground,
+                fontWeight: FontWeight.bold),
+          ),
+          backgroundColor: Theme.of(context).colorScheme.surface,
+          brightness: Theme.of(context).brightness,
+        ),
+        Expanded(
+          child: Center(
+            child: Text('Center'),
+          ),
+        ),
+      ],
     );
   }
 }

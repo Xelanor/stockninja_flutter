@@ -5,7 +5,7 @@ class StockTableHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       color: Color.fromRGBO(0, 11, 19, 1),
-      height: 30,
+      height: 20,
       child: Row(
         children: <Widget>[
           Expanded(

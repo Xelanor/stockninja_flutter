@@ -50,16 +50,22 @@ class _TabsScreenState extends State<TabsScreen> {
       },
       child: Scaffold(
         backgroundColor: Theme.of(context).colorScheme.background,
-        appBar: AppBar(
-          title: Text(
-            _pages[_selectedPageIndex]['title'],
-            style: TextStyle(
-                color: Theme.of(context).colorScheme.onBackground,
-                fontWeight: FontWeight.bold),
-          ),
-          backgroundColor: Theme.of(context).colorScheme.surface,
-          brightness: Theme.of(context).brightness,
-        ),
+        // appBar: AppBar(
+        //   title: Text(
+        //     _pages[_selectedPageIndex]['title'],
+        //     style: TextStyle(
+        //         color: Theme.of(context).colorScheme.onBackground,
+        //         fontWeight: FontWeight.bold),
+        //   ),
+        //   backgroundColor: Theme.of(context).colorScheme.surface,
+        //   brightness: Theme.of(context).brightness,
+        //   actions: <Widget>[
+        //     Icon(
+        //       Icons.add,
+        //       color: Colors.white,
+        //     )
+        //   ],
+        // ),
         body: _pages[_selectedPageIndex]['page'],
         bottomNavigationBar: BottomNavigationBar(
           type: BottomNavigationBarType.fixed,

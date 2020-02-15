@@ -90,28 +90,45 @@ class _HomepageScreenState extends State<HomepageScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return _isLoading
-        ? Center(
-            child: CircularProgressIndicator(
-                valueColor:
-                    AlwaysStoppedAnimation(Theme.of(context).primaryColor)))
-        : Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: <Widget>[
-              StockTableHeader(),
-              Expanded(
-                child: RefreshIndicator(
-                  onRefresh: refresh,
-                  child: ListView.builder(
-                    physics: BouncingScrollPhysics(),
-                    itemCount: _myStocks.length,
-                    itemBuilder: (_, i) =>
-                        StockTableMyRow(_myStocks[i], removeMyStock),
-                  ),
+    return Column(
+      children: <Widget>[
+        AppBar(
+          title: Text(
+            'StockNinja',
+            style: TextStyle(
+                color: Theme.of(context).colorScheme.onBackground,
+                fontWeight: FontWeight.bold),
+          ),
+          backgroundColor: Theme.of(context).colorScheme.surface,
+          brightness: Theme.of(context).brightness,
+        ),
+        Expanded(
+          child: _isLoading
+              ? Center(
+                  child: CircularProgressIndicator(
+                      valueColor: AlwaysStoppedAnimation(
+                          Theme.of(context).primaryColor)))
+              : Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: <Widget>[
+                    StockTableHeader(),
+                    Expanded(
+                      child: RefreshIndicator(
+                        onRefresh: refresh,
+                        child: ListView.builder(
+                          padding: EdgeInsets.all(0),
+                          physics: BouncingScrollPhysics(),
+                          itemCount: _myStocks.length,
+                          itemBuilder: (_, i) =>
+                              StockTableMyRow(_myStocks[i], removeMyStock),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
-              ),
-            ],
-          );
+        ),
+      ],
+    );
   }
 
   Future<void> refresh() {

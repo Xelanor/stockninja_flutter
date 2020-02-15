@@ -50,27 +50,44 @@ class _GlobalScreenState extends State<GlobalScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return _isLoading
-        ? Center(
-            child: CircularProgressIndicator(
-                valueColor:
-                    AlwaysStoppedAnimation(Theme.of(context).primaryColor)))
-        : Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: <Widget>[
-              EventTableHeader(),
-              Expanded(
-                child: RefreshIndicator(
-                  onRefresh: refresh,
-                  child: ListView.builder(
-                    physics: BouncingScrollPhysics(),
-                    itemCount: _events.length,
-                    itemBuilder: (_, i) => EventTableRow(_events[i]),
-                  ),
+    return Column(
+      children: <Widget>[
+        AppBar(
+          title: Text(
+            'Global',
+            style: TextStyle(
+                color: Theme.of(context).colorScheme.onBackground,
+                fontWeight: FontWeight.bold),
+          ),
+          backgroundColor: Theme.of(context).colorScheme.surface,
+          brightness: Theme.of(context).brightness,
+        ),
+        Expanded(
+          child: _isLoading
+              ? Center(
+                  child: CircularProgressIndicator(
+                      valueColor: AlwaysStoppedAnimation(
+                          Theme.of(context).primaryColor)))
+              : Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: <Widget>[
+                    EventTableHeader(),
+                    Expanded(
+                      child: RefreshIndicator(
+                        onRefresh: refresh,
+                        child: ListView.builder(
+                          padding: EdgeInsets.all(0),
+                          physics: BouncingScrollPhysics(),
+                          itemCount: _events.length,
+                          itemBuilder: (_, i) => EventTableRow(_events[i]),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
-              ),
-            ],
-          );
+        ),
+      ],
+    );
   }
 
   Future<void> refresh() {

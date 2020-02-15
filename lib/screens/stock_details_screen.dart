@@ -78,7 +78,11 @@ class _StockDetailsScreenState extends State<StockDetailsScreen> {
               onTap: () {
                 FocusScope.of(context).requestFocus(new FocusNode());
               },
-              child: StockTargetModal(widget.stockName, _setTarget));
+              child: StockTargetModal(
+                widget.stockName,
+                _setTarget,
+                _stockDetails['price'].toStringAsFixed(2),
+              ));
         });
   }
 
@@ -91,7 +95,11 @@ class _StockDetailsScreenState extends State<StockDetailsScreen> {
                 FocusScope.of(context).requestFocus(new FocusNode());
               },
               child: StockTransactionModal(
-                  widget.stockName, _stockTransaction, type));
+                widget.stockName,
+                _stockTransaction,
+                type,
+                _stockDetails['price'].toStringAsFixed(2),
+              ));
         });
   }
 

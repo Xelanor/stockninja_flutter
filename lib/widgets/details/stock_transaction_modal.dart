@@ -4,16 +4,25 @@ class StockTransactionModal extends StatefulWidget {
   final String stockName;
   final Function transactionFunc;
   final String type;
+  final String currentPrice;
 
-  StockTransactionModal(this.stockName, this.transactionFunc, this.type);
+  StockTransactionModal(
+      this.stockName, this.transactionFunc, this.type, this.currentPrice);
 
   @override
   _StockTransactioneModalState createState() => _StockTransactioneModalState();
 }
 
 class _StockTransactioneModalState extends State<StockTransactionModal> {
-  final _priceController = TextEditingController();
-  final _amountController = TextEditingController();
+  var _priceController;
+  var _amountController;
+
+  @override
+  void initState() {
+    _priceController = TextEditingController(text: widget.currentPrice);
+    _amountController = TextEditingController();
+    super.initState();
+  }
 
   void _submitData() {
     final _enteredPrice = double.parse(_priceController.text);
