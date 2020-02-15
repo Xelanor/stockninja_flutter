@@ -64,7 +64,8 @@ class StockTableSearchRow extends StatelessWidget {
                 flex: 35,
               ),
               Expanded(
-                child: StockTableIntCell(stock['rate'].toString(), increasing),
+                child: StockTableIntCell(
+                    '% ${stock['rate'].toString()}', increasing),
                 flex: 20,
               ),
             ],
