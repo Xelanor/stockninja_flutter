@@ -5,43 +5,21 @@ class ENVChart extends StatefulWidget {
   final List<dynamic> closes;
   final List<dynamic> upper;
   final List<dynamic> lower;
+  final int graphPeriod;
 
-  ENVChart(this.closes, this.upper, this.lower);
+  ENVChart(this.closes, this.upper, this.lower, this.graphPeriod);
 
   @override
   _ENVChartState createState() => _ENVChartState();
 }
 
 class _ENVChartState extends State<ENVChart> {
-  var _isInit = true;
-  var _duration = 1;
-  var _allCloses;
-  var _allUpper;
-  var _allLower;
-  var _closes;
-  var _upper;
-  var _lower;
-
-  @override
-  void didChangeDependencies() {
-    if (_isInit) {
-      _allCloses = widget.closes;
-      _allUpper = widget.upper;
-      _allLower = widget.lower;
-      _closes = widget.closes.sublist(60, 90);
-      _upper = widget.upper.sublist(60, 90);
-      _lower = widget.lower.sublist(60, 90);
-    }
-    _isInit = false;
-    super.didChangeDependencies();
-  }
-
   @override
   Widget build(BuildContext context) {
     List<charts.Series<dynamic, int>> series = [
       charts.Series(
         id: "ENV",
-        data: _closes,
+        data: widget.closes.sublist(90 - widget.graphPeriod, 90),
         domainFn: (point, i) => i,
         measureFn: (point, i) => point,
         colorFn: (_, __) =>
@@ -49,7 +27,7 @@ class _ENVChartState extends State<ENVChart> {
       ),
       charts.Series(
         id: "Dummy1",
-        data: _upper,
+        data: widget.upper.sublist(90 - widget.graphPeriod, 90),
         domainFn: (point, i) => i,
         measureFn: (point, i) => point,
         colorFn: (_, __) => charts.ColorUtil.fromDartColor(
@@ -57,7 +35,7 @@ class _ENVChartState extends State<ENVChart> {
       ),
       charts.Series(
         id: "Dummy2",
-        data: _lower,
+        data: widget.lower.sublist(90 - widget.graphPeriod, 90),
         domainFn: (point, i) => i,
         measureFn: (point, i) => point,
         colorFn: (_, __) => charts.ColorUtil.fromDartColor(
@@ -104,68 +82,6 @@ class _ENVChartState extends State<ENVChart> {
                 ),
               ),
             ),
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: <Widget>[
-              RaisedButton(
-                color: _duration == 1
-                    ? Theme.of(context).colorScheme.primaryVariant
-                    : Colors.white,
-                onPressed: () {
-                  setState(() {
-                    _closes = _allCloses.sublist(60, 90);
-                    _upper = _allUpper.sublist(60, 90);
-                    _lower = _allLower.sublist(60, 90);
-                    _duration = 1;
-                  });
-                },
-                child: Text(
-                  '1 AYLIK',
-                  style: TextStyle(
-                    color: _duration == 1 ? Colors.white : Colors.black,
-                  ),
-                ),
-              ),
-              RaisedButton(
-                color: _duration == 2
-                    ? Theme.of(context).colorScheme.primaryVariant
-                    : Colors.white,
-                onPressed: () {
-                  setState(() {
-                    _closes = _allCloses.sublist(30, 90);
-                    _upper = _allUpper.sublist(30, 90);
-                    _lower = _allLower.sublist(30, 90);
-                    _duration = 2;
-                  });
-                },
-                child: Text(
-                  '2 AYLIK',
-                  style: TextStyle(
-                    color: _duration == 2 ? Colors.white : Colors.black,
-                  ),
-                ),
-              ),
-              RaisedButton(
-                color: _duration == 3
-                    ? Theme.of(context).colorScheme.primaryVariant
-                    : Colors.white,
-                onPressed: () {
-                  setState(() {
-                    _closes = _allCloses.sublist(0, 90);
-                    _upper = _allUpper.sublist(0, 90);
-                    _lower = _allLower.sublist(0, 90);
-                    _duration = 3;
-                  });
-                },
-                child: Text(
-                  '3 AYLIK',
-                  style: TextStyle(
-                    color: _duration == 3 ? Colors.white : Colors.black,
-                  ),
-                ),
-              )
-            ],
           ),
         ],
       ),

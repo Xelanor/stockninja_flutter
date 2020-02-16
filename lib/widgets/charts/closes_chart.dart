@@ -3,35 +3,21 @@ import 'package:flutter/material.dart';
 
 class ClosesChart extends StatefulWidget {
   final List<dynamic> data;
+  final int graphPeriod;
 
-  ClosesChart(this.data);
+  ClosesChart(this.data, this.graphPeriod);
 
   @override
   _ClosesChartState createState() => _ClosesChartState();
 }
 
 class _ClosesChartState extends State<ClosesChart> {
-  var _isInit = true;
-  var _duration = 1;
-  var _allData;
-  var _data;
-
-  @override
-  void didChangeDependencies() {
-    if (_isInit) {
-      _allData = widget.data;
-      _data = widget.data.sublist(60, 90);
-    }
-    _isInit = false;
-    super.didChangeDependencies();
-  }
-
   @override
   Widget build(BuildContext context) {
     List<charts.Series<dynamic, int>> series = [
       charts.Series(
         id: "Closes",
-        data: _data,
+        data: widget.data.sublist(90 - widget.graphPeriod, 90),
         domainFn: (point, i) => i,
         measureFn: (point, i) => point,
         colorFn: (_, __) =>
@@ -78,62 +64,6 @@ class _ClosesChartState extends State<ClosesChart> {
                 ),
               ),
             ),
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: <Widget>[
-              RaisedButton(
-                color: _duration == 1
-                    ? Theme.of(context).colorScheme.primaryVariant
-                    : Colors.white,
-                onPressed: () {
-                  setState(() {
-                    _data = _allData.sublist(60, 90);
-                    _duration = 1;
-                  });
-                },
-                child: Text(
-                  '1 AYLIK',
-                  style: TextStyle(
-                    color: _duration == 1 ? Colors.white : Colors.black,
-                  ),
-                ),
-              ),
-              RaisedButton(
-                color: _duration == 2
-                    ? Theme.of(context).colorScheme.primaryVariant
-                    : Colors.white,
-                onPressed: () {
-                  setState(() {
-                    _data = _allData.sublist(30, 90);
-                    _duration = 2;
-                  });
-                },
-                child: Text(
-                  '2 AYLIK',
-                  style: TextStyle(
-                    color: _duration == 2 ? Colors.white : Colors.black,
-                  ),
-                ),
-              ),
-              RaisedButton(
-                color: _duration == 3
-                    ? Theme.of(context).colorScheme.primaryVariant
-                    : Colors.white,
-                onPressed: () {
-                  setState(() {
-                    _data = _allData.sublist(0, 90);
-                    _duration = 3;
-                  });
-                },
-                child: Text(
-                  '3 AYLIK',
-                  style: TextStyle(
-                    color: _duration == 3 ? Colors.white : Colors.black,
-                  ),
-                ),
-              )
-            ],
           ),
         ],
       ),

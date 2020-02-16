@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import './utils/theme.dart';
+import './utils/preferences.dart';
 
 import './screens/tabs_screen.dart';
 import './screens/homepage_screen.dart';
@@ -18,9 +19,18 @@ void main() {
       .then((_) {
     SharedPreferences.getInstance().then((prefs) {
       var darkModeOn = prefs.getBool('darkMode') ?? true;
+      var graphPeriod = prefs.getInt('graphPeriod') ?? 30;
       runApp(
-        ChangeNotifierProvider<ThemeNotifier>(
-          create: (ctx) => ThemeNotifier(darkModeOn ? darkTheme : lightTheme),
+        MultiProvider(
+          providers: [
+            ChangeNotifierProvider<ThemeNotifier>(
+              create: (ctx) =>
+                  ThemeNotifier(darkModeOn ? darkTheme : lightTheme),
+            ),
+            ChangeNotifierProvider<GraphNotifier>(
+              create: (ctx) => GraphNotifier(graphPeriod),
+            )
+          ],
           child: MyApp(),
         ),
       );

@@ -2,7 +2,10 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
+import '../utils/preferences.dart';
 import '../widgets/charts/intraday_chart.dart';
 import '../widgets/charts/closes_chart.dart';
 import '../widgets/charts/rsi_chart.dart';
@@ -29,6 +32,7 @@ class _StockDetailsScreenState extends State<StockDetailsScreen> {
   var _isInit = true;
   var _isLoading = false;
   var _rate;
+  var _graphPeriod = 30;
 
   Map<String, dynamic> _stockDetails = {};
 
@@ -139,6 +143,12 @@ class _StockDetailsScreenState extends State<StockDetailsScreen> {
     super.didChangeDependencies();
   }
 
+  void filterOptionResults(int option) {
+    setState(() {
+      _graphPeriod = option;
+    });
+  }
+
   String rateCalculator(price, prevClose) {
     var rate = (((price - prevClose) / prevClose) * 100).toStringAsFixed(2);
     return rate;
@@ -146,6 +156,8 @@ class _StockDetailsScreenState extends State<StockDetailsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final graphNotifier = Provider.of<GraphNotifier>(context);
+    _graphPeriod = (graphNotifier.getGraphPeriod());
     return DefaultTabController(
       length: 2,
       child: Scaffold(
@@ -158,7 +170,34 @@ class _StockDetailsScreenState extends State<StockDetailsScreen> {
                 size: 35,
               ),
               onPressed: () => startAddNewTargets(context),
-            )
+            ),
+            PopupMenuButton(
+              offset: Offset(20.0, 50.0),
+              onSelected: (int selectedValue) {
+                filterOptionResults(selectedValue);
+                onGraphPeriodChanged(selectedValue, graphNotifier);
+              },
+              color: Theme.of(context).colorScheme.primaryVariant,
+              icon: Icon(
+                Icons.filter_list,
+                color: Colors.white,
+                size: 35,
+              ),
+              itemBuilder: (_) => [
+                PopupMenuItem(
+                  child: (Text('1 AY')),
+                  value: 30,
+                ),
+                PopupMenuItem(
+                  child: (Text('2 AY')),
+                  value: 60,
+                ),
+                PopupMenuItem(
+                  child: (Text('3 AY')),
+                  value: 90,
+                ),
+              ],
+            ),
           ],
           bottom: PreferredSize(
             preferredSize: Size(double.infinity, 30),
@@ -415,30 +454,34 @@ class _StockDetailsScreenState extends State<StockDetailsScreen> {
                           ),
                         ),
                         IntradayChart(_stockDetails['intraday']),
-                        ClosesChart(_stockDetails['closes']),
+                        ClosesChart(_stockDetails['closes'], _graphPeriod),
                       ],
                     ),
                   ),
                   SingleChildScrollView(
                     child: Column(
                       children: <Widget>[
-                        RSIChart(_stockDetails['rsi']),
+                        RSIChart(_stockDetails['rsi'], _graphPeriod),
                         TripleChart(
                           _stockDetails['closes'],
                           _stockDetails['triple_index']['first_list'],
                           _stockDetails['triple_index']['second_list'],
                           _stockDetails['triple_index']['third_list'],
+                          _graphPeriod,
                         ),
                         ENVChart(
                           _stockDetails['closes'],
                           _stockDetails['env']['upper'],
                           _stockDetails['env']['lower'],
+                          _graphPeriod,
                         ),
                         NinjaChart(
                           _stockDetails['ninja_index'],
+                          _graphPeriod,
                         ),
                         Ninja2Chart(
                           _stockDetails['ninja_index_s'],
+                          _graphPeriod,
                         )
                       ],
                     ),
@@ -447,5 +490,12 @@ class _StockDetailsScreenState extends State<StockDetailsScreen> {
               ),
       ),
     );
+  }
+
+  void onGraphPeriodChanged(
+      int selectedValue, GraphNotifier graphNotifier) async {
+    graphNotifier.setGraphPeriod(selectedValue);
+    var prefs = await SharedPreferences.getInstance();
+    prefs.setInt('graphPeriod', selectedValue);
   }
 }

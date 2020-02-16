@@ -3,36 +3,22 @@ import 'package:flutter/material.dart';
 
 class NinjaChart extends StatefulWidget {
   List<dynamic> data;
+  final int graphPeriod;
 
-  NinjaChart(this.data);
+  NinjaChart(this.data, this.graphPeriod);
 
   @override
   _NinjaChartState createState() => _NinjaChartState();
 }
 
 class _NinjaChartState extends State<NinjaChart> {
-  var _isInit = true;
-  var _duration = 1;
-  var _allData;
-  var _data;
-
-  @override
-  void didChangeDependencies() {
-    if (_isInit) {
-      _allData = widget.data;
-      _data = widget.data.sublist(60, 90);
-    }
-    _isInit = false;
-    super.didChangeDependencies();
-  }
-
   @override
   Widget build(BuildContext context) {
     widget.data = widget.data.map((d) => d * 100).toList();
     List<charts.Series<dynamic, int>> series = [
       charts.Series(
         id: "Ninja",
-        data: _data,
+        data: widget.data.sublist(90 - widget.graphPeriod, 90),
         domainFn: (point, i) => i,
         measureFn: (point, i) => point,
         colorFn: (_, __) =>
@@ -40,7 +26,7 @@ class _NinjaChartState extends State<NinjaChart> {
       ),
       charts.Series(
         id: "Dummy1",
-        data: List.generate(_data.length, (i) => 0),
+        data: List.generate(widget.graphPeriod, (i) => 0),
         domainFn: (point, i) => i,
         measureFn: (point, i) => point,
         colorFn: (_, __) => charts.ColorUtil.fromDartColor(
@@ -87,62 +73,6 @@ class _NinjaChartState extends State<NinjaChart> {
                 ),
               ),
             ),
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: <Widget>[
-              RaisedButton(
-                color: _duration == 1
-                    ? Theme.of(context).colorScheme.primaryVariant
-                    : Colors.white,
-                onPressed: () {
-                  setState(() {
-                    _data = _allData.sublist(60, 90);
-                    _duration = 1;
-                  });
-                },
-                child: Text(
-                  '1 AYLIK',
-                  style: TextStyle(
-                    color: _duration == 1 ? Colors.white : Colors.black,
-                  ),
-                ),
-              ),
-              RaisedButton(
-                color: _duration == 2
-                    ? Theme.of(context).colorScheme.primaryVariant
-                    : Colors.white,
-                onPressed: () {
-                  setState(() {
-                    _data = _allData.sublist(30, 90);
-                    _duration = 2;
-                  });
-                },
-                child: Text(
-                  '2 AYLIK',
-                  style: TextStyle(
-                    color: _duration == 2 ? Colors.white : Colors.black,
-                  ),
-                ),
-              ),
-              RaisedButton(
-                color: _duration == 3
-                    ? Theme.of(context).colorScheme.primaryVariant
-                    : Colors.white,
-                onPressed: () {
-                  setState(() {
-                    _data = _allData.sublist(0, 90);
-                    _duration = 3;
-                  });
-                },
-                child: Text(
-                  '3 AYLIK',
-                  style: TextStyle(
-                    color: _duration == 3 ? Colors.white : Colors.black,
-                  ),
-                ),
-              )
-            ],
           ),
         ],
       ),
