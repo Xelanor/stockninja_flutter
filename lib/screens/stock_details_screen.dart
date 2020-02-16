@@ -178,11 +178,25 @@ class _StockDetailsScreenState extends State<StockDetailsScreen> {
             ),
           ),
           elevation: 0,
-          title: Text(
-            '${widget.stockName}',
-            style: TextStyle(
-                color: Theme.of(context).colorScheme.onBackground,
-                fontWeight: FontWeight.bold),
+          title: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Text(
+                '${widget.stockName} ',
+                style: TextStyle(
+                    color: Theme.of(context).colorScheme.onBackground,
+                    fontWeight: FontWeight.bold),
+              ),
+              Text(
+                _isLoading ? '' : '${_stockDetails['shortName']}',
+                textAlign: TextAlign.left,
+                style: TextStyle(
+                  color: Colors.white60,
+                  fontSize: 12,
+                ),
+                overflow: TextOverflow.ellipsis,
+              ),
+            ],
           ),
           backgroundColor: widget.increasing
               ? Theme.of(context).colorScheme.onSecondary
