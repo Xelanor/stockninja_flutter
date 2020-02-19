@@ -48,6 +48,20 @@ class _GlobalScreenState extends State<GlobalScreen> {
     super.didChangeDependencies();
   }
 
+  get appBarColor {
+    if (_events[0]['decreasing'] > 75) {
+      return Colors.red.shade800;
+    } else if (_events[0]['decreasing'] > 50) {
+      return Colors.red.shade400;
+    } else if (_events[0]['decreasing'] > 25) {
+      return Colors.green.shade500;
+    } else if (_events[0]['decreasing'] > 1) {
+      return Colors.green.shade800;
+    } else if (_events[0]['decreasing'] == 0) {
+      return Colors.grey;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -59,7 +73,7 @@ class _GlobalScreenState extends State<GlobalScreen> {
                 color: Theme.of(context).colorScheme.onBackground,
                 fontWeight: FontWeight.bold),
           ),
-          backgroundColor: Theme.of(context).colorScheme.surface,
+          backgroundColor: appBarColor,
           brightness: Theme.of(context).brightness,
         ),
         Expanded(
@@ -79,7 +93,21 @@ class _GlobalScreenState extends State<GlobalScreen> {
                           padding: EdgeInsets.all(0),
                           physics: BouncingScrollPhysics(),
                           itemCount: _events.length,
-                          itemBuilder: (_, i) => EventTableRow(_events[i]),
+                          itemBuilder: (_, i) {
+                            if (i % 2 == 0) {
+                              return EventTableRow(_events[i]);
+                            } else {
+                              return Column(
+                                children: <Widget>[
+                                  EventTableRow(_events[i]),
+                                  Divider(
+                                    color: Colors.orange.shade500,
+                                    height: 0.8,
+                                  )
+                                ],
+                              );
+                            }
+                          },
                         ),
                       ),
                     ),
