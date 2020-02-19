@@ -3,8 +3,8 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
-import '../widgets/table/event_table_header.dart';
-import '../widgets/table/event_table_row.dart';
+import '../widgets/global/daily_changes.dart';
+import '../widgets/global/indicator_search.dart';
 
 class GlobalScreen extends StatefulWidget {
   static const routeName = '/global-screen';
@@ -39,6 +39,12 @@ class _GlobalScreenState extends State<GlobalScreen> {
     });
   }
 
+  void onRefresh(events) {
+    setState(() {
+      _events = events;
+    });
+  }
+
   @override
   void didChangeDependencies() {
     if (_isInit) {
@@ -64,72 +70,52 @@ class _GlobalScreenState extends State<GlobalScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: <Widget>[
-        AppBar(
-          title: Text(
-            'Global',
-            style: TextStyle(
-                color: Theme.of(context).colorScheme.onBackground,
-                fontWeight: FontWeight.bold),
+    return DefaultTabController(
+      length: 2,
+      child: Column(
+        children: <Widget>[
+          AppBar(
+            title: Text(
+              'Global',
+              style: TextStyle(
+                  color: Theme.of(context).colorScheme.onBackground,
+                  fontWeight: FontWeight.bold),
+            ),
+            backgroundColor: appBarColor,
+            brightness: Theme.of(context).brightness,
           ),
-          backgroundColor: appBarColor,
-          brightness: Theme.of(context).brightness,
-        ),
-        Expanded(
-          child: _isLoading
-              ? Center(
-                  child: CircularProgressIndicator(
-                      valueColor: AlwaysStoppedAnimation(
-                          Theme.of(context).primaryColor)))
-              : Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: <Widget>[
-                    EventTableHeader(),
-                    Expanded(
-                      child: RefreshIndicator(
-                        onRefresh: refresh,
-                        child: ListView.builder(
-                          padding: EdgeInsets.all(0),
-                          physics: BouncingScrollPhysics(),
-                          itemCount: _events.length,
-                          itemBuilder: (_, i) {
-                            if (i % 2 == 0) {
-                              return EventTableRow(_events[i]);
-                            } else {
-                              return Column(
-                                children: <Widget>[
-                                  EventTableRow(_events[i]),
-                                  Divider(
-                                    color: Colors.orange.shade500,
-                                    height: 0.8,
-                                  )
-                                ],
-                              );
-                            }
-                          },
-                        ),
-                      ),
-                    ),
-                  ],
+          Container(
+            height: 40,
+            child: TabBar(
+              indicatorColor: Colors.white60,
+              labelColor: Colors.white,
+              tabs: <Widget>[
+                Text(
+                  "Veriler",
+                  style: TextStyle(fontSize: 16),
                 ),
-        ),
-      ],
+                Text(
+                  "Arama",
+                  style: TextStyle(fontSize: 16),
+                ),
+              ],
+            ),
+          ),
+          Expanded(
+            child: _isLoading
+                ? Center(
+                    child: CircularProgressIndicator(
+                        valueColor: AlwaysStoppedAnimation(
+                            Theme.of(context).primaryColor)))
+                : TabBarView(
+                    children: <Widget>[
+                      DailyChanges(_events, onRefresh),
+                      IndicatorSearch(),
+                    ],
+                  ),
+          ),
+        ],
+      ),
     );
-  }
-
-  Future<void> refresh() {
-    const url = 'http://34.67.211.44/api/change';
-    http.get(url).then(
-      (response) {
-        final extractedData = json.decode(response.body) as List<dynamic>;
-        setState(() {
-          _events = extractedData;
-        });
-      },
-    ).catchError((err) {
-      print(err);
-    });
-    return Future.value();
   }
 }
