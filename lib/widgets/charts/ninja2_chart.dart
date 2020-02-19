@@ -47,6 +47,7 @@ class _Ninja2ChartState extends State<Ninja2Chart> {
             child: charts.LineChart(
               series,
               animate: true,
+              defaultRenderer: charts.LineRendererConfig(includePoints: true),
               domainAxis: charts.NumericAxisSpec(
                 renderSpec: charts.SmallTickRendererSpec(
                   labelStyle: charts.TextStyleSpec(
