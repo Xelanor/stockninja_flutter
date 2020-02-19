@@ -19,14 +19,48 @@ class _HomepageScreenState extends State<HomepageScreen> {
   var _isLoading = false;
   var _myStocks = [];
 
-  void removeMyStock(stockName) {
-    const url = 'http://34.67.211.44/api/stock/delete';
-    var index =
-        _myStocks.indexWhere((stock) => stock['stockName'] == stockName);
-    setState(() {
-      _myStocks.removeAt(index);
-    });
-    http.post(url, body: {'name': stockName});
+  bool removeMyStock(stockName) {
+    if (_showlogoutDialog(stockName) == true) {
+      return true;
+    }
+    return false;
+  }
+
+  bool _showlogoutDialog(stockName) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: Colors.black,
+          title:
+              Text("$stockName portföyden çıkarmak istediğinize emin misiniz?"),
+          actions: <Widget>[
+            RaisedButton(
+              color: Theme.of(context).colorScheme.primary,
+              child: Text("İptal"),
+              onPressed: () {
+                Navigator.of(context).pop();
+                return false;
+              },
+            ),
+            FlatButton(
+              child: Text("Devam"),
+              onPressed: () {
+                const url = 'http://34.67.211.44/api/stock/delete';
+                var index = _myStocks
+                    .indexWhere((stock) => stock['stockName'] == stockName);
+                setState(() {
+                  _myStocks.removeAt(index);
+                });
+                http.post(url, body: {'name': stockName});
+                Navigator.of(context).pop();
+                return true;
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
