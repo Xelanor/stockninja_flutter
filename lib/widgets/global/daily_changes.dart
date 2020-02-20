@@ -26,7 +26,7 @@ class DailyChanges extends StatelessWidget {
               physics: BouncingScrollPhysics(),
               itemCount: events.length,
               itemBuilder: (_, i) {
-                if (i % 2 == 0) {
+                if (events[i]['date'].substring(11, 13) != "13") {
                   return EventTableRow(events[i]);
                 } else {
                   return Column(
