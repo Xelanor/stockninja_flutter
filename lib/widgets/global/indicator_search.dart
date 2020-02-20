@@ -53,59 +53,81 @@ class _IndicatorSearchState extends State<IndicatorSearch> {
       child: Column(
         children: <Widget>[
           Container(
-            margin: EdgeInsets.only(bottom: 10, top: 28),
-            padding: EdgeInsets.only(right: 18, left: 18),
+            margin: EdgeInsets.only(bottom: 10, top: 35),
+            padding: EdgeInsets.only(left: 18),
             child: Column(
               children: <Widget>[
-                Text(
-                  'RSI MAX Value: $_rsiValue',
-                  style: TextStyle(fontSize: 18),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    Text(
+                      'RSI MAX Value: $_rsiValue',
+                      style: TextStyle(fontSize: 15),
+                    ),
+                    Expanded(
+                      child: Slider(
+                        value: _rsiValue.toDouble(),
+                        min: 0,
+                        max: 100,
+                        divisions: 100,
+                        label: '$_rsiValue',
+                        onChanged: (double newValue) {
+                          setState(() {
+                            _rsiValue = newValue.round();
+                          });
+                        },
+                      ),
+                    ),
+                  ],
                 ),
-                Slider(
-                  value: _rsiValue.toDouble(),
-                  min: 0,
-                  max: 100,
-                  divisions: 100,
-                  label: '$_rsiValue',
-                  onChanged: (double newValue) {
-                    setState(() {
-                      _rsiValue = newValue.round();
-                    });
-                  },
+                SizedBox(height: 8),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    Text(
+                      'NINJA MAX Value: % $_ninjaValue',
+                      style: TextStyle(fontSize: 15),
+                    ),
+                    Expanded(
+                      child: Slider(
+                        value: _ninjaValue.toDouble(),
+                        min: -20,
+                        max: 20,
+                        divisions: 40,
+                        label: '$_ninjaValue',
+                        onChanged: (double newValue) {
+                          setState(() {
+                            _ninjaValue = newValue.round();
+                          });
+                        },
+                      ),
+                    ),
+                  ],
                 ),
-                SizedBox(height: 16),
-                Text(
-                  'NINJA MAX Value: % $_ninjaValue',
-                  style: TextStyle(fontSize: 18),
-                ),
-                Slider(
-                  value: _ninjaValue.toDouble(),
-                  min: -20,
-                  max: 20,
-                  divisions: 40,
-                  label: '$_ninjaValue',
-                  onChanged: (double newValue) {
-                    setState(() {
-                      _ninjaValue = newValue.round();
-                    });
-                  },
-                ),
-                SizedBox(height: 16),
-                Text(
-                  'PD/DD Max Value: $_pdDdValue',
-                  style: TextStyle(fontSize: 18),
-                ),
-                Slider(
-                  value: _pdDdValue.toDouble(),
-                  min: 0.0,
-                  max: 30.0,
-                  divisions: 300,
-                  label: '$_pdDdValue',
-                  onChanged: (double newValue) {
-                    setState(() {
-                      _pdDdValue = double.parse(newValue.toStringAsFixed(1));
-                    });
-                  },
+                SizedBox(height: 8),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    Text(
+                      'PD/DD Max Value: $_pdDdValue',
+                      style: TextStyle(fontSize: 15),
+                    ),
+                    Expanded(
+                      child: Slider(
+                        value: _pdDdValue.toDouble(),
+                        min: 0.0,
+                        max: 30.0,
+                        divisions: 300,
+                        label: '$_pdDdValue',
+                        onChanged: (double newValue) {
+                          setState(() {
+                            _pdDdValue =
+                                double.parse(newValue.toStringAsFixed(1));
+                          });
+                        },
+                      ),
+                    ),
+                  ],
                 ),
                 RaisedButton(
                   child: Text(

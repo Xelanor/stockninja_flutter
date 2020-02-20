@@ -22,7 +22,7 @@ class StockTableMyRow extends StatelessWidget {
         child: Icon(Icons.delete),
         alignment: Alignment.centerRight,
         padding: EdgeInsets.only(right: 20),
-        margin: EdgeInsets.all(2),
+        margin: EdgeInsets.all(1),
       ),
       direction: DismissDirection.endToStart,
       confirmDismiss: (direction) {
@@ -48,6 +48,11 @@ class StockTableMyRow extends StatelessWidget {
           );
         },
         child: Container(
+          decoration: BoxDecoration(
+            border: Border(
+              bottom: BorderSide(color: Colors.grey, width: 0.5),
+            ),
+          ),
           padding: EdgeInsets.only(bottom: 1.5),
           child: Row(
             children: [

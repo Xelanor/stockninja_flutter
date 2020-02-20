@@ -181,6 +181,17 @@ class _SearchScreenState extends State<SearchScreen> {
                               labelText: "Search",
                               hintText: "Search",
                               prefixIcon: Icon(Icons.search),
+                              suffixIcon: _searchController.text != ""
+                                  ? IconButton(
+                                      icon: Icon(Icons.clear),
+                                      onPressed: () {
+                                        setState(() {
+                                          _searchController.clear();
+                                          filterSearchResults(
+                                              _searchController.text);
+                                        });
+                                      })
+                                  : null,
                               border: OutlineInputBorder(
                                   borderRadius:
                                       BorderRadius.all(Radius.circular(10.0)))),
