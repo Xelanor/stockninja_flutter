@@ -81,7 +81,9 @@ class _GlobalScreenState extends State<GlobalScreen> {
                   color: Theme.of(context).colorScheme.onBackground,
                   fontWeight: FontWeight.bold),
             ),
-            backgroundColor: appBarColor,
+            backgroundColor: _events.length > 0
+                ? appBarColor
+                : Theme.of(context).colorScheme.surface,
             brightness: Theme.of(context).brightness,
           ),
           Container(
