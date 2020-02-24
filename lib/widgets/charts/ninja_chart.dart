@@ -77,6 +77,7 @@ class _NinjaChartState extends State<NinjaChart> {
                 tickProviderSpec: charts.BasicNumericTickProviderSpec(
                   dataIsInWholeNumbers: false,
                   zeroBound: false,
+                  desiredTickCount: 10,
                 ),
                 renderSpec: charts.GridlineRendererSpec(
                   labelOffsetFromAxisPx: 15,
