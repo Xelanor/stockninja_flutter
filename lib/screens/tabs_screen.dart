@@ -94,8 +94,8 @@ class _TabsScreenState extends State<TabsScreen> {
               title: Text('Search'),
             ),
             BottomNavigationBarItem(
-              icon: Icon(Icons.settings),
-              title: Text('Settings'),
+              icon: Icon(Icons.person),
+              title: Text('Giriş Yap'),
             )
           ],
         ),

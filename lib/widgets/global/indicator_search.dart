@@ -20,7 +20,7 @@ class _IndicatorSearchState extends State<IndicatorSearch> {
   double _pdDdValue = 5.0;
 
   void fetchIndicators() {
-    var url = 'http://34.67.211.44/api/ticker/global';
+    var url = 'http://54.196.2.46/api/ticker/search';
     setState(() {
       _isLoading = true;
     });

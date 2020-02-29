@@ -2,7 +2,9 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
 
+import '../providers/authentication.dart';
 import '../widgets/table/stock_table_header.dart';
 import '../widgets/table/stock_table_search_row.dart';
 
@@ -21,8 +23,14 @@ class _SearchScreenState extends State<SearchScreen> {
   var _showedStocks = [];
 
   void addToMyStock(stockName) {
-    const url = 'http://34.67.211.44/api/stock/add';
-    http.post(url, body: {'name': stockName});
+    var userId =
+        Provider.of<AuthNotifier>(context, listen: false).getUserInfo['id'];
+    const url = 'http://54.196.2.46/api/portfolio/add';
+    http.post(
+      url,
+      body: json.encode({'user': userId, "name": stockName}),
+      headers: {"Content-Type": "application/json"},
+    );
   }
 
   void filterSearchResults(String query) {
@@ -86,7 +94,7 @@ class _SearchScreenState extends State<SearchScreen> {
   }
 
   void getMyStocks() {
-    const url = 'http://34.67.211.44/api/all_ticker_details';
+    const url = 'http://54.196.2.46/api/ticker/all';
     setState(() {
       _isLoading = true;
     });
@@ -218,7 +226,7 @@ class _SearchScreenState extends State<SearchScreen> {
   }
 
   Future<void> refresh() {
-    const url = 'http://34.67.211.44/api/all_ticker_details';
+    const url = 'http://54.196.2.46/api/ticker/all';
     http.get(url).then(
       (response) {
         final extractedData = json.decode(response.body) as List<dynamic>;
