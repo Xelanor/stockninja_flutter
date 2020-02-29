@@ -22,20 +22,21 @@ class StockTableMyRow extends StatelessWidget {
         child: Icon(Icons.delete),
         alignment: Alignment.centerRight,
         padding: EdgeInsets.only(right: 20),
-        margin: EdgeInsets.all(2),
+        margin: EdgeInsets.all(1),
       ),
       direction: DismissDirection.endToStart,
-      onDismissed: (direction) {
-        swipeFunction(stock['stockName']);
-        Scaffold.of(context).hideCurrentSnackBar();
-        Scaffold.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-              '${stock['shortName']} porföyünden çıkartıldı!',
-              style: TextStyle(color: Colors.white),
+      confirmDismiss: (direction) {
+        if (swipeFunction(stock['stockName']) == true) {
+          Scaffold.of(context).hideCurrentSnackBar();
+          Scaffold.of(context).showSnackBar(
+            SnackBar(
+              content: Text(
+                '${stock['shortName']} porföyünden çıkartıldı!',
+                style: TextStyle(color: Colors.white),
+              ),
             ),
-          ),
-        );
+          );
+        }
       },
       child: InkWell(
         onTap: () {
@@ -47,6 +48,11 @@ class StockTableMyRow extends StatelessWidget {
           );
         },
         child: Container(
+          decoration: BoxDecoration(
+            border: Border(
+              bottom: BorderSide(color: Colors.grey, width: 0.5),
+            ),
+          ),
           padding: EdgeInsets.only(bottom: 1.5),
           child: Row(
             children: [

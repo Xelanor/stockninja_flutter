@@ -461,7 +461,9 @@ class _StockDetailsScreenState extends State<StockDetailsScreen> {
                   SingleChildScrollView(
                     child: Column(
                       children: <Widget>[
-                        RSIChart(_stockDetails['rsi'], _graphPeriod),
+                        _stockDetails['rsi'].length > 0
+                            ? RSIChart(_stockDetails['rsi'], _graphPeriod)
+                            : Container(),
                         TripleChart(
                           _stockDetails['closes'],
                           _stockDetails['triple_index']['first_list'],

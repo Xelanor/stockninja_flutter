@@ -25,13 +25,22 @@ class _Ninja2ChartState extends State<Ninja2Chart> {
             charts.ColorUtil.fromDartColor(Color.fromRGBO(134, 65, 244, 1)),
       ),
       charts.Series(
+        id: "Dummy2",
+        data: widget.data.sublist(90 - widget.graphPeriod, 90),
+        domainFn: (point, i) => i,
+        measureFn: (point, i) => point,
+        colorFn: (_, __) =>
+            charts.ColorUtil.fromDartColor(Color.fromRGBO(255, 255, 255, 1)),
+      )..setAttribute(charts.rendererIdKey, 'customPoint'),
+      charts.Series(
         id: "Dummy1",
         data: List.generate(widget.graphPeriod, (i) => 0),
         domainFn: (point, i) => i,
         measureFn: (point, i) => point,
         colorFn: (_, __) => charts.ColorUtil.fromDartColor(
             Theme.of(context).colorScheme.onSecondary),
-      ),
+        strokeWidthPxFn: (_, __) => 0.5,
+      )
     ];
 
     return Container(
@@ -47,6 +56,14 @@ class _Ninja2ChartState extends State<Ninja2Chart> {
             child: charts.LineChart(
               series,
               animate: true,
+              defaultRenderer: charts.LineRendererConfig(),
+              customSeriesRenderers: [
+                charts.PointRendererConfig(
+                  customRendererId: 'customPoint',
+                  strokeWidthPx: 0.01,
+                  radiusPx: 2,
+                )
+              ],
               domainAxis: charts.NumericAxisSpec(
                 renderSpec: charts.SmallTickRendererSpec(
                   labelStyle: charts.TextStyleSpec(
@@ -58,9 +75,10 @@ class _Ninja2ChartState extends State<Ninja2Chart> {
               ),
               primaryMeasureAxis: charts.NumericAxisSpec(
                 tickProviderSpec: charts.BasicNumericTickProviderSpec(
-                    dataIsInWholeNumbers: false,
-                    zeroBound: false,
-                    desiredTickCount: 10),
+                  dataIsInWholeNumbers: false,
+                  zeroBound: false,
+                  desiredTickCount: 10,
+                ),
                 renderSpec: charts.GridlineRendererSpec(
                   labelOffsetFromAxisPx: 15,
                   labelStyle: charts.TextStyleSpec(

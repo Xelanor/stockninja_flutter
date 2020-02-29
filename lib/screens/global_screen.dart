@@ -3,8 +3,8 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
-import '../widgets/table/event_table_header.dart';
-import '../widgets/table/event_table_row.dart';
+import '../widgets/global/daily_changes.dart';
+import '../widgets/global/indicator_search.dart';
 
 class GlobalScreen extends StatefulWidget {
   static const routeName = '/global-screen';
@@ -39,6 +39,12 @@ class _GlobalScreenState extends State<GlobalScreen> {
     });
   }
 
+  void onRefresh(events) {
+    setState(() {
+      _events = events;
+    });
+  }
+
   @override
   void didChangeDependencies() {
     if (_isInit) {
@@ -48,60 +54,70 @@ class _GlobalScreenState extends State<GlobalScreen> {
     super.didChangeDependencies();
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: <Widget>[
-        AppBar(
-          title: Text(
-            'Global',
-            style: TextStyle(
-                color: Theme.of(context).colorScheme.onBackground,
-                fontWeight: FontWeight.bold),
-          ),
-          backgroundColor: Theme.of(context).colorScheme.surface,
-          brightness: Theme.of(context).brightness,
-        ),
-        Expanded(
-          child: _isLoading
-              ? Center(
-                  child: CircularProgressIndicator(
-                      valueColor: AlwaysStoppedAnimation(
-                          Theme.of(context).primaryColor)))
-              : Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: <Widget>[
-                    EventTableHeader(),
-                    Expanded(
-                      child: RefreshIndicator(
-                        onRefresh: refresh,
-                        child: ListView.builder(
-                          padding: EdgeInsets.all(0),
-                          physics: BouncingScrollPhysics(),
-                          itemCount: _events.length,
-                          itemBuilder: (_, i) => EventTableRow(_events[i]),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-        ),
-      ],
-    );
+  get appBarColor {
+    if (_events[0]['decreasing'] > 75) {
+      return Colors.red.shade800;
+    } else if (_events[0]['decreasing'] > 50) {
+      return Colors.red.shade400;
+    } else if (_events[0]['decreasing'] > 25) {
+      return Colors.green.shade500;
+    } else if (_events[0]['decreasing'] > 1) {
+      return Colors.green.shade800;
+    } else if (_events[0]['decreasing'] == 0) {
+      return Colors.grey;
+    }
   }
 
-  Future<void> refresh() {
-    const url = 'http://34.67.211.44/api/change';
-    http.get(url).then(
-      (response) {
-        final extractedData = json.decode(response.body) as List<dynamic>;
-        setState(() {
-          _events = extractedData;
-        });
-      },
-    ).catchError((err) {
-      print(err);
-    });
-    return Future.value();
+  @override
+  Widget build(BuildContext context) {
+    return DefaultTabController(
+      length: 2,
+      child: Column(
+        children: <Widget>[
+          AppBar(
+            title: Text(
+              'Global',
+              style: TextStyle(
+                  color: Theme.of(context).colorScheme.onBackground,
+                  fontWeight: FontWeight.bold),
+            ),
+            backgroundColor: _events.length > 0
+                ? appBarColor
+                : Theme.of(context).colorScheme.surface,
+            brightness: Theme.of(context).brightness,
+          ),
+          Container(
+            height: 40,
+            child: TabBar(
+              indicatorColor: Colors.white60,
+              labelColor: Colors.white,
+              tabs: <Widget>[
+                Text(
+                  "Veriler",
+                  style: TextStyle(fontSize: 16),
+                ),
+                Text(
+                  "Arama",
+                  style: TextStyle(fontSize: 16),
+                ),
+              ],
+            ),
+          ),
+          Expanded(
+            child: _isLoading
+                ? Center(
+                    child: CircularProgressIndicator(
+                        valueColor: AlwaysStoppedAnimation(
+                            Theme.of(context).primaryColor)))
+                : TabBarView(
+                    children: <Widget>[
+                      DailyChanges(_events, onRefresh),
+                      IndicatorSearch(),
+                    ],
+                  ),
+          ),
+        ],
+      ),
+    );
   }
 }

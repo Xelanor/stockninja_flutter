@@ -14,12 +14,48 @@ class ENVChart extends StatefulWidget {
 }
 
 class _ENVChartState extends State<ENVChart> {
+  List<dynamic> _closes;
+  List<dynamic> _upper;
+  List<dynamic> _lower;
+  int _scope = 21;
+  double _rate = 2.5;
+
+  void calculateNewUpperLower() {
+    var historicData =
+        widget.closes.sublist(widget.closes.length - (90 + _scope - 1));
+    var envValues = {"upper": [], "lower": []};
+
+    for (var i = 0; i < 90; i++) {
+      var envData = historicData.sublist(i, i + _scope);
+
+      var dataAvg = envData.reduce((a, b) => a + b) / envData.length;
+      var upper = dataAvg + dataAvg * _rate / 100;
+      var lower = dataAvg - dataAvg * _rate / 100;
+
+      envValues['upper'].add(upper);
+      envValues['lower'].add(lower);
+    }
+
+    setState(() {
+      _upper = envValues['upper'];
+      _lower = envValues['lower'];
+    });
+  }
+
+  @override
+  void didChangeDependencies() {
+    _closes = widget.closes;
+    _upper = widget.upper;
+    _lower = widget.lower;
+    super.didChangeDependencies();
+  }
+
   @override
   Widget build(BuildContext context) {
     List<charts.Series<dynamic, int>> series = [
       charts.Series(
         id: "ENV",
-        data: widget.closes.sublist(90 - widget.graphPeriod, 90),
+        data: _closes.sublist(widget.closes.length - widget.graphPeriod),
         domainFn: (point, i) => i,
         measureFn: (point, i) => point,
         colorFn: (_, __) =>
@@ -27,7 +63,7 @@ class _ENVChartState extends State<ENVChart> {
       ),
       charts.Series(
         id: "Dummy1",
-        data: widget.upper.sublist(90 - widget.graphPeriod, 90),
+        data: _upper.sublist(90 - widget.graphPeriod),
         domainFn: (point, i) => i,
         measureFn: (point, i) => point,
         colorFn: (_, __) => charts.ColorUtil.fromDartColor(
@@ -35,7 +71,7 @@ class _ENVChartState extends State<ENVChart> {
       ),
       charts.Series(
         id: "Dummy2",
-        data: widget.lower.sublist(90 - widget.graphPeriod, 90),
+        data: _lower.sublist(90 - widget.graphPeriod, 90),
         domainFn: (point, i) => i,
         measureFn: (point, i) => point,
         colorFn: (_, __) => charts.ColorUtil.fromDartColor(
@@ -82,6 +118,49 @@ class _ENVChartState extends State<ENVChart> {
                 ),
               ),
             ),
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: <Widget>[
+              Text(
+                'Scope: $_scope',
+                style: TextStyle(fontSize: 15),
+              ),
+              Expanded(
+                child: Slider(
+                  value: _scope.toDouble(),
+                  min: 5,
+                  max: 30,
+                  divisions: 25,
+                  label: '$_scope',
+                  onChanged: (double newValue) {
+                    setState(() {
+                      _scope = newValue.round();
+                      calculateNewUpperLower();
+                    });
+                  },
+                ),
+              ),
+              Text(
+                'Rate: $_rate',
+                style: TextStyle(fontSize: 15),
+              ),
+              Expanded(
+                child: Slider(
+                  value: _rate.toDouble(),
+                  min: 0,
+                  max: 10,
+                  divisions: 100,
+                  label: '$_rate',
+                  onChanged: (double newValue) {
+                    setState(() {
+                      _rate = double.parse(newValue.toStringAsFixed(1));
+                      calculateNewUpperLower();
+                    });
+                  },
+                ),
+              ),
+            ],
           ),
         ],
       ),
