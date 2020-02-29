@@ -17,7 +17,7 @@ class _ClosesChartState extends State<ClosesChart> {
     List<charts.Series<dynamic, int>> series = [
       charts.Series(
         id: "Closes",
-        data: widget.data.sublist(90 - widget.graphPeriod, 90),
+        data: widget.data.sublist(widget.data.length - widget.graphPeriod),
         domainFn: (point, i) => i,
         measureFn: (point, i) => point,
         colorFn: (_, __) =>

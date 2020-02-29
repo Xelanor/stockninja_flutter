@@ -44,7 +44,30 @@ class TransactionCard extends StatelessWidget {
                         fontWeight: FontWeight.w600,
                       ),
                     ),
-                    Icon(Icons.more_horiz),
+                    SizedBox(
+                      height: 24,
+                      width: 24,
+                      child: PopupMenuButton(
+                        tooltip: "Seçenekler",
+                        padding: EdgeInsets.only(bottom: 24),
+                        offset: Offset(50.0, 50.0),
+                        onSelected: (String selectedValue) {},
+                        color: Theme.of(context).colorScheme.primaryVariant,
+                        icon: Icon(
+                          Icons.more_horiz,
+                          color: Colors.white,
+                        ),
+                        itemBuilder: (_) => [
+                          PopupMenuItem(
+                              height: 18,
+                              child: (Text(
+                                'Sil',
+                                style: TextStyle(fontSize: 14),
+                              )),
+                              value: "delete"),
+                        ],
+                      ),
+                    ),
                   ],
                 ),
               ),

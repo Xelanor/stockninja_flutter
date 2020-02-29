@@ -21,7 +21,7 @@ class _TripleChartState extends State<TripleChart> {
     List<charts.Series<dynamic, int>> series = [
       charts.Series(
         id: "Closes",
-        data: widget.closes.sublist(90 - widget.graphPeriod, 90),
+        data: widget.closes.sublist(widget.closes.length - widget.graphPeriod),
         domainFn: (point, i) => i,
         measureFn: (point, i) => point,
         colorFn: (_, __) =>
