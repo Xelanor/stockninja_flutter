@@ -19,7 +19,7 @@ class _GlobalScreenState extends State<GlobalScreen> {
   var _events = [];
 
   void getEvents() {
-    const url = 'http://34.67.211.44/api/change';
+    const url = 'http://54.196.2.46/api/change';
     setState(() {
       _isLoading = true;
     });

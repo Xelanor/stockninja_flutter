@@ -13,7 +13,9 @@ import '../widgets/charts/triple_chart.dart';
 import '../widgets/charts/env_chart.dart';
 import '../widgets/charts/ninja_chart.dart';
 import '../widgets/charts/ninja2_chart.dart';
+import 'package:provider/provider.dart';
 
+import '../providers/authentication.dart';
 import '../widgets/details/stock_target_modal.dart';
 import '../widgets/details/stock_transaction_modal.dart';
 
@@ -37,11 +39,13 @@ class _StockDetailsScreenState extends State<StockDetailsScreen> {
   Map<String, dynamic> _stockDetails = {};
 
   void _setTarget(type, target) {
+    var userId =
+        Provider.of<AuthNotifier>(context, listen: false).getUserInfo['id'];
     if (type == "buy") {
-      const url = "http://34.67.211.44/api/stock/setbuytarget";
+      const url = "http://54.196.2.46/api/portfolio/setbuytarget";
       http.post(url,
           body: json.encode(
-              {'name': widget.stockName, 'target': target, 'prevTarget': 0}),
+              {'name': widget.stockName, 'target': target, 'user': userId}),
           headers: {"Content-Type": "application/json"}).then((_) {
         setState(() {
           _stockDetails['buyTarget'] = target;
@@ -50,10 +54,10 @@ class _StockDetailsScreenState extends State<StockDetailsScreen> {
     }
 
     if (type == "sell") {
-      const url = "http://34.67.211.44/api/stock/setselltarget";
+      const url = "http://54.196.2.46/api/portfolio/setselltarget";
       http.post(url,
           body: json.encode(
-              {'name': widget.stockName, 'target': target, 'prevTarget': 0}),
+              {'name': widget.stockName, 'target': target, 'user': userId}),
           headers: {"Content-Type": "application/json"}).then((_) {
         setState(() {
           _stockDetails['sellTarget'] = target;
@@ -63,13 +67,16 @@ class _StockDetailsScreenState extends State<StockDetailsScreen> {
   }
 
   void _stockTransaction(type, price, amount) {
-    const url = "http://34.67.211.44/api/transaction/add";
+    var userId =
+        Provider.of<AuthNotifier>(context, listen: false).getUserInfo['id'];
+    const url = "http://54.196.2.46/api/transaction/add";
     http.post(url,
         body: json.encode({
+          'user': userId,
           'name': widget.stockName,
           'price': price,
           'amount': amount,
-          'type': type
+          'kind': type
         }),
         headers: {"Content-Type": "application/json"}).then((_) {});
   }
@@ -108,13 +115,18 @@ class _StockDetailsScreenState extends State<StockDetailsScreen> {
   }
 
   void getStockDetails() {
+    var userId =
+        Provider.of<AuthNotifier>(context, listen: false).getUserInfo['id'];
     var now = DateTime.now();
-    var url =
-        'http://34.67.211.44/api/single_ticker_details/${widget.stockName}';
+    var url = 'http://54.196.2.46/api/ticker/single-details';
     setState(() {
       _isLoading = true;
     });
-    http.get(url).then(
+    http.post(
+      url,
+      body: json.encode({'user': userId, "name": widget.stockName}),
+      headers: {"Content-Type": "application/json"},
+    ).then(
       (response) {
         print(DateTime.now().difference(now));
         final extractedData =

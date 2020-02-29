@@ -9,7 +9,7 @@ class TransactionCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     DateTime date(date) {
-      return DateFormat("yyyy-MM-dd'T'HH:mm:ss").parse(date);
+      return DateFormat("yyyy-MM-dd HH:mm:ss").parse(date);
     }
 
     return Container(

@@ -3,6 +3,9 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:onesignal_flutter/onesignal_flutter.dart';
+import 'package:provider/provider.dart';
+
+import '../providers/authentication.dart';
 
 import '../widgets/table/stock_table_header.dart';
 import '../widgets/table/stock_table_my_row.dart';
@@ -46,13 +49,19 @@ class _HomepageScreenState extends State<HomepageScreen> {
             FlatButton(
               child: Text("Devam"),
               onPressed: () {
-                const url = 'http://34.67.211.44/api/stock/delete';
+                var userId = Provider.of<AuthNotifier>(context, listen: false)
+                    .getUserInfo['id'];
+                const url = 'http://54.196.2.46/api/portfolio/delete';
                 var index = _myStocks
                     .indexWhere((stock) => stock['stockName'] == stockName);
                 setState(() {
                   _myStocks.removeAt(index);
                 });
-                http.post(url, body: {'name': stockName});
+                http.post(
+                  url,
+                  body: json.encode({'name': stockName, 'user': userId}),
+                  headers: {"Content-Type": "application/json"},
+                );
                 Navigator.of(context).pop();
                 return true;
               },
@@ -78,26 +87,20 @@ class _HomepageScreenState extends State<HomepageScreen> {
 
     OneSignal.shared
         .setInFocusDisplayType(OSNotificationDisplayType.notification);
-
-    // OneSignal.shared
-    //     .setNotificationReceivedHandler((OSNotification notification) {
-    //   print("new notif");
-    //   print(notification);
-    // });
-
-    // OneSignal.shared
-    //     .setNotificationOpenedHandler((OSNotificationOpenedResult result) {
-    //   print("opened notif");
-    //   print(result);
-    // });
   }
 
   void getMyStocks() {
-    const url = 'http://34.67.211.44/api/my_ticker_details';
+    var userId =
+        Provider.of<AuthNotifier>(context, listen: false).getUserInfo['id'];
+    const url = 'http://54.196.2.46/api/portfolio';
     setState(() {
       _isLoading = true;
     });
-    http.get(url).then(
+    http.post(
+      url,
+      body: json.encode({'user': userId}),
+      headers: {"Content-Type": "application/json"},
+    ).then(
       (response) {
         final extractedData = json.decode(response.body) as List<dynamic>;
         setState(() {
@@ -136,38 +139,42 @@ class _HomepageScreenState extends State<HomepageScreen> {
           backgroundColor: Theme.of(context).colorScheme.surface,
           brightness: Theme.of(context).brightness,
         ),
-        Expanded(
-          child: _isLoading
-              ? Center(
-                  child: CircularProgressIndicator(
-                      valueColor: AlwaysStoppedAnimation(
-                          Theme.of(context).primaryColor)))
-              : Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: <Widget>[
-                    StockTableHeader(),
-                    Expanded(
-                      child: RefreshIndicator(
-                        onRefresh: refresh,
-                        child: ListView.builder(
-                          padding: EdgeInsets.all(0),
-                          physics: BouncingScrollPhysics(),
-                          itemCount: _myStocks.length,
-                          itemBuilder: (_, i) =>
-                              StockTableMyRow(_myStocks[i], removeMyStock),
-                        ),
+        StockTableHeader(),
+        _isLoading
+            ? Expanded(
+                child: Center(
+                    child: CircularProgressIndicator(
+                        valueColor: AlwaysStoppedAnimation(
+                            Theme.of(context).primaryColor))),
+              )
+            : _myStocks.length == 0
+                ? Expanded(child: Center(child: Text('Portföyünüz boş')))
+                : Expanded(
+                    child: RefreshIndicator(
+                      onRefresh: refresh,
+                      child: ListView.builder(
+                        padding: EdgeInsets.all(0),
+                        physics: BouncingScrollPhysics(
+                            parent: AlwaysScrollableScrollPhysics()),
+                        itemCount: _myStocks.length,
+                        itemBuilder: (_, i) =>
+                            StockTableMyRow(_myStocks[i], removeMyStock),
                       ),
                     ),
-                  ],
-                ),
-        ),
+                  ),
       ],
     );
   }
 
   Future<void> refresh() {
-    const url = 'http://34.67.211.44/api/my_ticker_details';
-    http.get(url).then(
+    var userId =
+        Provider.of<AuthNotifier>(context, listen: false).getUserInfo['id'];
+    const url = 'http://54.196.2.46/api/portfolio';
+    http.post(
+      url,
+      body: json.encode({'user': userId}),
+      headers: {"Content-Type": "application/json"},
+    ).then(
       (response) {
         final extractedData = json.decode(response.body) as List<dynamic>;
         setState(() {

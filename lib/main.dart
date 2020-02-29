@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -25,7 +27,8 @@ void main() {
       var token = prefs.getString('jwtToken') ?? "";
       var userInfo;
       try {
-        userInfo = jwtDecode(token);
+        var decoded = jwtDecode(token);
+        userInfo = json.decode(decoded['identity']);
       } catch (e) {
         userInfo = {};
       }

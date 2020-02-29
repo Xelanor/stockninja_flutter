@@ -1,10 +1,17 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:provider/provider.dart';
+
+import '../../utils/jwt_decode.dart';
+import '../../providers/authentication.dart';
 
 class UserSecondInput extends StatefulWidget {
-  final Function passLogin;
   final String email;
 
-  UserSecondInput(this.passLogin, this.email);
+  UserSecondInput(this.email);
 
   @override
   _UserSecondInputState createState() => _UserSecondInputState();
@@ -12,26 +19,42 @@ class UserSecondInput extends StatefulWidget {
 
 class _UserSecondInputState extends State<UserSecondInput> {
   final _passCodeController = TextEditingController();
+
+  void passLogin(String email) {
+    var url = 'http://54.196.2.46/api/auth/login/${_passCodeController.text}';
+    http.post(
+      url,
+      body: json.encode({'email': email}),
+      headers: {"Content-Type": "application/json"},
+    ).then((res) async {
+      if (res.statusCode == 200) {
+        var prefs = await SharedPreferences.getInstance();
+        var token = json.decode(res.body)['token'];
+        prefs.setString('jwtToken', token);
+        var decoded = jwtDecode(token);
+        var userInfo = json.decode(decoded['identity']);
+        Provider.of<AuthNotifier>(context, listen: false).setUserInfo(userInfo);
+        Navigator.of(context).popUntil((r) => r.settings.isInitialRoute);
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.start,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: <Widget>[
-        Expanded(
-          flex: 1,
-          child: Container(
-            child: FlatButton(
-              child: Icon(
-                Icons.arrow_back,
-                size: 30,
-              ),
-              onPressed: () {},
-            ),
-          ),
+    return GestureDetector(
+      onTap: () {
+        FocusScope.of(context).requestFocus(new FocusNode());
+      },
+      child: Scaffold(
+        backgroundColor: Theme.of(context).colorScheme.background,
+        appBar: AppBar(
+          backgroundColor: Theme.of(context).colorScheme.background,
+          brightness: Theme.of(context).brightness,
+          title: Text(''),
+          iconTheme: IconThemeData(color: Colors.white),
         ),
-        Expanded(
-          flex: 6,
+        body: Padding(
+          padding: const EdgeInsets.all(22.0),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -41,11 +64,11 @@ class _UserSecondInputState extends State<UserSecondInput> {
                 style: TextStyle(fontSize: 18),
                 textAlign: TextAlign.center,
               ),
-              SizedBox(height: 12),
+              SizedBox(height: 20),
               Container(
                 child: TextField(
                   style: TextStyle(fontSize: 22, letterSpacing: 12),
-                  maxLength: 6,
+                  maxLength: 4,
                   textAlign: TextAlign.center,
                   keyboardType: TextInputType.number,
                   controller: _passCodeController,
@@ -53,7 +76,7 @@ class _UserSecondInputState extends State<UserSecondInput> {
                     fillColor: Colors.black45,
                     counterText: '',
                     contentPadding: EdgeInsets.all(0),
-                    hintText: "1 2 3 4 5 6",
+                    hintText: "1 2 3 4",
                     hintStyle: TextStyle(letterSpacing: 12),
                     focusedBorder: UnderlineInputBorder(
                       borderSide: BorderSide(color: Colors.white),
@@ -65,22 +88,41 @@ class _UserSecondInputState extends State<UserSecondInput> {
                 ),
               ),
               SizedBox(height: 20),
-              RaisedButton(
-                onPressed: () {
-                  if (_passCodeController.text.length == 6) {
-                    widget.passLogin(widget.email, _passCodeController.text);
-                  }
-                },
-                child: Text(
-                  'KODU GİR',
-                  style: TextStyle(
-                      color: Colors.black, fontWeight: FontWeight.w600),
+              Container(
+                margin: EdgeInsets.symmetric(horizontal: 5),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    RaisedButton(
+                      onPressed: () {
+                        if (_passCodeController.text.length == 4) {
+                          passLogin(widget.email);
+                        }
+                      },
+                      child: Text(
+                        'KODU GİR',
+                        style: TextStyle(
+                            color: Colors.black, fontWeight: FontWeight.w600),
+                      ),
+                    ),
+                    RaisedButton(
+                      onPressed: () {
+                        Navigator.of(context)
+                            .popUntil((r) => r.settings.isInitialRoute);
+                      },
+                      child: Text(
+                        'İPTAL ET',
+                        style: TextStyle(
+                            color: Colors.black, fontWeight: FontWeight.w600),
+                      ),
+                    )
+                  ],
                 ),
-              )
+              ),
             ],
           ),
         ),
-      ],
+      ),
     );
   }
 }

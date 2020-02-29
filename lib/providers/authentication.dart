@@ -6,12 +6,18 @@ class AuthNotifier with ChangeNotifier {
 
   AuthNotifier(this._userInfo, this._isAuthenticated);
 
-  getUserInfo() => _userInfo;
-  getUserAuthState() => _isAuthenticated;
+  Map get getUserInfo => _userInfo;
+  bool get getUserAuthState => _isAuthenticated;
 
   setUserInfo(Map userInfo) async {
     _isAuthenticated = true;
     _userInfo = userInfo;
+    notifyListeners();
+  }
+
+  logoutUser() async {
+    _isAuthenticated = false;
+    _userInfo = {};
     notifyListeners();
   }
 }
