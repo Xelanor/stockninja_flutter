@@ -208,23 +208,6 @@ class _StockDetailsScreenState extends State<StockDetailsScreen> {
               ],
             ),
           ],
-          bottom: PreferredSize(
-            preferredSize: Size(double.infinity, 30),
-            child: TabBar(
-              indicatorColor: Colors.white60,
-              labelColor: Colors.white,
-              tabs: <Widget>[
-                Text(
-                  "Veriler",
-                  style: TextStyle(fontSize: 16),
-                ),
-                Text(
-                  "Tablolar",
-                  style: TextStyle(fontSize: 16),
-                ),
-              ],
-            ),
-          ),
           elevation: 0,
           title: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -257,219 +240,311 @@ class _StockDetailsScreenState extends State<StockDetailsScreen> {
                 child: CircularProgressIndicator(
                     valueColor:
                         AlwaysStoppedAnimation(Theme.of(context).primaryColor)))
-            : TabBarView(
+            : Column(
                 children: <Widget>[
-                  SingleChildScrollView(
-                    physics: BouncingScrollPhysics(),
-                    child: Column(
+                  Container(
+                    padding: EdgeInsets.only(left: 20),
+                    color: widget.increasing
+                        ? Theme.of(context).colorScheme.onSecondary
+                        : Theme.of(context).colorScheme.error,
+                    child: Row(
                       children: <Widget>[
-                        Container(
-                          decoration: BoxDecoration(
-                              color: widget.increasing
-                                  ? Theme.of(context).colorScheme.onSecondary
-                                  : Theme.of(context).colorScheme.error,
-                              borderRadius: BorderRadius.only(
-                                  bottomRight: Radius.circular(150),
-                                  bottomLeft: Radius.circular(50))),
-                          height: 320,
-                          width: double.infinity,
-                          child: Padding(
-                            padding: EdgeInsets.symmetric(
-                                horizontal: 20, vertical: 20),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            Text(
+                              'Şu anki Fiyat',
+                              style: TextStyle(
+                                  fontSize: 12, color: Colors.white60),
+                            ),
+                            Text(
+                              'TL ${_stockDetails['price'].toStringAsFixed(2)}',
+                              style: TextStyle(
+                                  fontSize: 20,
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w600),
+                            )
+                          ],
+                        ),
+                        SizedBox(width: 25),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            Text(
+                              'Dünden bu yana',
+                              style: TextStyle(
+                                  fontSize: 12, color: Colors.white60),
+                            ),
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.end,
                               children: <Widget>[
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  crossAxisAlignment: CrossAxisAlignment.end,
-                                  children: <Widget>[
-                                    Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: <Widget>[
-                                        Text(
-                                          'Şu anki Fiyat',
-                                          style: TextStyle(
-                                              fontSize: 16,
-                                              color: Colors.white60),
-                                        ),
-                                        Text(
-                                          'TL ${_stockDetails['price'].toStringAsFixed(2)}',
-                                          style: TextStyle(
-                                              fontSize: 32,
-                                              color: Colors.white,
-                                              fontWeight: FontWeight.w600),
-                                        )
-                                      ],
-                                    ),
-                                    Container(
-                                      margin: EdgeInsets.only(right: 15),
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: <Widget>[
-                                          Text(
-                                            'Dünkü Fiyat',
-                                            style: TextStyle(
-                                                fontSize: 14,
-                                                color: Colors.white60),
-                                          ),
-                                          Text(
-                                            'TL ${_stockDetails['prevClose'].toStringAsFixed(2)}',
-                                            style: TextStyle(
-                                                fontSize: 24,
-                                                color: Colors.white),
-                                          )
-                                        ],
-                                      ),
-                                    )
-                                  ],
+                                Text(
+                                  '% $_rate',
+                                  style: TextStyle(
+                                      fontSize: 20,
+                                      color: Colors.white,
+                                      height: 1),
                                 ),
-                                SizedBox(height: 28),
-                                Row(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: <Widget>[
-                                    Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: <Widget>[
-                                        Text(
-                                          'Dünden bu yana',
-                                          style: TextStyle(
-                                              fontSize: 14,
-                                              color: Colors.white60),
-                                        ),
-                                        Row(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.end,
-                                          children: <Widget>[
-                                            Text(
-                                              '% $_rate',
-                                              style: TextStyle(
-                                                  fontSize: 24,
-                                                  color: Colors.white,
-                                                  height: 1),
-                                            ),
-                                            Icon(
-                                              double.parse(_rate) >= 0
-                                                  ? Icons.arrow_upward
-                                                  : Icons.arrow_downward,
-                                              size: 32,
-                                            )
-                                          ],
-                                        ),
-                                      ],
-                                    ),
-                                    Container(
-                                      margin: EdgeInsets.only(right: 15),
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: <Widget>[
-                                          Text(
-                                            'Alış Hedefi',
-                                            style: TextStyle(
-                                                fontSize: 14,
-                                                color: Colors.white60),
-                                          ),
-                                          Text(
-                                            'TL ${_stockDetails['buyTarget'].toStringAsFixed(2)}',
-                                            style: TextStyle(
-                                              fontSize: 24,
-                                              color: Colors.white,
-                                            ),
-                                          ),
-                                          Text(
-                                            'Satış Hedefi',
-                                            style: TextStyle(
-                                                fontSize: 14,
-                                                color: Colors.white60),
-                                          ),
-                                          Text(
-                                            'TL ${_stockDetails['sellTarget'].toStringAsFixed(2)}',
-                                            style: TextStyle(
-                                              fontSize: 24,
-                                              color: Colors.white,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                SizedBox(height: 20),
-                                ButtonBar(
-                                  buttonPadding: EdgeInsets.all(0),
-                                  alignment: MainAxisAlignment.start,
-                                  children: <Widget>[
-                                    ButtonTheme(
-                                      minWidth: 110,
-                                      child: RaisedButton(
-                                        padding: EdgeInsets.all(10),
-                                        child: Text(
-                                          'SATIN AL',
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 16),
-                                        ),
-                                        color: Colors.white,
-                                        shape: RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(20)),
-                                        onPressed: () {
-                                          startTransactionModal(context, "buy");
-                                        },
-                                        textTheme: ButtonTextTheme.primary,
-                                        textColor: double.parse(_rate) >= 0
-                                            ? Theme.of(context)
-                                                .colorScheme
-                                                .onSecondary
-                                            : Theme.of(context)
-                                                .colorScheme
-                                                .error,
-                                      ),
-                                    ),
-                                  ],
-                                ),
+                                Icon(
+                                  double.parse(_rate) >= 0
+                                      ? Icons.arrow_upward
+                                      : Icons.arrow_downward,
+                                  size: 24,
+                                )
                               ],
                             ),
-                          ),
+                          ],
                         ),
-                        IntradayChart(_stockDetails['intraday']),
-                        ClosesChart(_stockDetails['closes'], _graphPeriod),
                       ],
                     ),
                   ),
-                  SingleChildScrollView(
-                    child: Column(
+                  Container(
+                    color: widget.increasing
+                        ? Theme.of(context).colorScheme.onSecondary
+                        : Theme.of(context).colorScheme.error,
+                    child: TabBar(
+                      indicatorColor: Colors.white60,
+                      labelColor: Colors.white,
+                      tabs: <Widget>[
+                        Text(
+                          "Veriler",
+                          style: TextStyle(fontSize: 16),
+                        ),
+                        Text(
+                          "Tablolar",
+                          style: TextStyle(fontSize: 16),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Expanded(
+                    child: TabBarView(
                       children: <Widget>[
-                        _stockDetails['rsi'].length > 0
-                            ? RSIChart(_stockDetails['rsi'], _graphPeriod)
-                            : Container(),
-                        TripleChart(
-                          _stockDetails['closes'],
-                          _stockDetails['triple_index']['first_list'],
-                          _stockDetails['triple_index']['second_list'],
-                          _stockDetails['triple_index']['third_list'],
-                          _graphPeriod,
+                        SingleChildScrollView(
+                          physics: BouncingScrollPhysics(),
+                          child: Column(
+                            children: <Widget>[
+                              Container(
+                                decoration: BoxDecoration(
+                                    color: widget.increasing
+                                        ? Theme.of(context)
+                                            .colorScheme
+                                            .onSecondary
+                                        : Theme.of(context).colorScheme.error,
+                                    borderRadius: BorderRadius.only(
+                                        bottomRight: Radius.circular(150),
+                                        bottomLeft: Radius.circular(50))),
+                                height: 320,
+                                width: double.infinity,
+                                child: Padding(
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal: 20, vertical: 20),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: <Widget>[
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.end,
+                                        children: <Widget>[
+                                          Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: <Widget>[
+                                              Text(
+                                                'Şu anki Fiyat',
+                                                style: TextStyle(
+                                                    fontSize: 16,
+                                                    color: Colors.white60),
+                                              ),
+                                              Text(
+                                                'TL ${_stockDetails['price'].toStringAsFixed(2)}',
+                                                style: TextStyle(
+                                                    fontSize: 32,
+                                                    color: Colors.white,
+                                                    fontWeight:
+                                                        FontWeight.w600),
+                                              )
+                                            ],
+                                          ),
+                                          Container(
+                                            margin: EdgeInsets.only(right: 15),
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: <Widget>[
+                                                Text(
+                                                  'Dünkü Fiyat',
+                                                  style: TextStyle(
+                                                      fontSize: 14,
+                                                      color: Colors.white60),
+                                                ),
+                                                Text(
+                                                  'TL ${_stockDetails['prevClose'].toStringAsFixed(2)}',
+                                                  style: TextStyle(
+                                                      fontSize: 24,
+                                                      color: Colors.white),
+                                                )
+                                              ],
+                                            ),
+                                          )
+                                        ],
+                                      ),
+                                      SizedBox(height: 28),
+                                      Row(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: <Widget>[
+                                          Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: <Widget>[
+                                              Text(
+                                                'Dünden bu yana',
+                                                style: TextStyle(
+                                                    fontSize: 14,
+                                                    color: Colors.white60),
+                                              ),
+                                              Row(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.end,
+                                                children: <Widget>[
+                                                  Text(
+                                                    '% $_rate',
+                                                    style: TextStyle(
+                                                        fontSize: 24,
+                                                        color: Colors.white,
+                                                        height: 1),
+                                                  ),
+                                                  Icon(
+                                                    double.parse(_rate) >= 0
+                                                        ? Icons.arrow_upward
+                                                        : Icons.arrow_downward,
+                                                    size: 32,
+                                                  )
+                                                ],
+                                              ),
+                                            ],
+                                          ),
+                                          Container(
+                                            margin: EdgeInsets.only(right: 15),
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: <Widget>[
+                                                Text(
+                                                  'Alış Hedefi',
+                                                  style: TextStyle(
+                                                      fontSize: 14,
+                                                      color: Colors.white60),
+                                                ),
+                                                Text(
+                                                  'TL ${_stockDetails['buyTarget'].toStringAsFixed(2)}',
+                                                  style: TextStyle(
+                                                    fontSize: 24,
+                                                    color: Colors.white,
+                                                  ),
+                                                ),
+                                                Text(
+                                                  'Satış Hedefi',
+                                                  style: TextStyle(
+                                                      fontSize: 14,
+                                                      color: Colors.white60),
+                                                ),
+                                                Text(
+                                                  'TL ${_stockDetails['sellTarget'].toStringAsFixed(2)}',
+                                                  style: TextStyle(
+                                                    fontSize: 24,
+                                                    color: Colors.white,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      SizedBox(height: 20),
+                                      ButtonBar(
+                                        buttonPadding: EdgeInsets.all(0),
+                                        alignment: MainAxisAlignment.start,
+                                        children: <Widget>[
+                                          ButtonTheme(
+                                            minWidth: 110,
+                                            child: RaisedButton(
+                                              padding: EdgeInsets.all(10),
+                                              child: Text(
+                                                'SATIN AL',
+                                                style: TextStyle(
+                                                    fontWeight: FontWeight.bold,
+                                                    fontSize: 16),
+                                              ),
+                                              color: Colors.white,
+                                              shape: RoundedRectangleBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          20)),
+                                              onPressed: () {
+                                                startTransactionModal(
+                                                    context, "buy");
+                                              },
+                                              textTheme:
+                                                  ButtonTextTheme.primary,
+                                              textColor:
+                                                  double.parse(_rate) >= 0
+                                                      ? Theme.of(context)
+                                                          .colorScheme
+                                                          .onSecondary
+                                                      : Theme.of(context)
+                                                          .colorScheme
+                                                          .error,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              IntradayChart(_stockDetails['intraday']),
+                              ClosesChart(
+                                  _stockDetails['closes'], _graphPeriod),
+                            ],
+                          ),
                         ),
-                        ENVChart(
-                          _stockDetails['closes'],
-                          _stockDetails['env']['upper'],
-                          _stockDetails['env']['lower'],
-                          _graphPeriod,
+                        SingleChildScrollView(
+                          child: Column(
+                            children: <Widget>[
+                              _stockDetails['rsi'].length > 0
+                                  ? RSIChart(_stockDetails['rsi'], _graphPeriod)
+                                  : Container(),
+                              TripleChart(
+                                _stockDetails['closes'],
+                                _stockDetails['triple_index']['first_list'],
+                                _stockDetails['triple_index']['second_list'],
+                                _stockDetails['triple_index']['third_list'],
+                                _graphPeriod,
+                              ),
+                              ENVChart(
+                                _stockDetails['closes'],
+                                _stockDetails['env']['upper'],
+                                _stockDetails['env']['lower'],
+                                _graphPeriod,
+                              ),
+                              NinjaChart(
+                                _stockDetails['ninja_index'],
+                                _graphPeriod,
+                              ),
+                              Ninja2Chart(
+                                _stockDetails['ninja_index_s'],
+                                _graphPeriod,
+                              )
+                            ],
+                          ),
                         ),
-                        NinjaChart(
-                          _stockDetails['ninja_index'],
-                          _graphPeriod,
-                        ),
-                        Ninja2Chart(
-                          _stockDetails['ninja_index_s'],
-                          _graphPeriod,
-                        )
                       ],
                     ),
                   ),
