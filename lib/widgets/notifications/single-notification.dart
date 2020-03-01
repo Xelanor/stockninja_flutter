@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
 
 import './consecutive-analysis-info.dart';
 import '../../screens/stock_details_screen.dart';
@@ -69,7 +70,20 @@ class SingleNotification extends StatelessWidget {
           ),
         ),
         title: Text(notification['title']),
-        subtitle: Text(notification['subtitle']),
+        subtitle: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Text(notification['subtitle']),
+            Text(
+              DateFormat('dd.MM.yyyy')
+                  .add_Hm()
+                  .format(DateTime.fromMillisecondsSinceEpoch(
+                      notification['createdAt']['\$date']))
+                  .toString(),
+              style: TextStyle(fontSize: 10, color: Colors.grey[500]),
+            ),
+          ],
+        ),
         trailing: Icon(
           notification['viewed']
               ? Icons.radio_button_unchecked

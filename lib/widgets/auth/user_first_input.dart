@@ -77,6 +77,7 @@ class _UserFirstInputState extends State<UserFirstInput> {
                 SizedBox(height: 20),
                 Container(
                   child: TextField(
+                    autocorrect: false,
                     autofocus: true,
                     controller: _emailController,
                     onChanged: (value) {
