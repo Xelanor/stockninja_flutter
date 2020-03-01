@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
+import '../charts/change_chart.dart';
 import '../table/event_table_header.dart';
 import '../table/event_table_row.dart';
 
@@ -17,6 +18,7 @@ class DailyChanges extends StatelessWidget {
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
       children: <Widget>[
+        ChangeChart(events),
         EventTableHeader(),
         Expanded(
           child: RefreshIndicator(
