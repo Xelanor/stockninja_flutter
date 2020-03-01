@@ -81,36 +81,34 @@ class _StockDetailsScreenState extends State<StockDetailsScreen> {
   }
 
   void startAddNewTargets(BuildContext ctx) {
-    showModalBottomSheet(
-        context: ctx,
-        builder: (_) {
-          return GestureDetector(
-              onTap: () {
-                FocusScope.of(context).requestFocus(new FocusNode());
-              },
-              child: StockTargetModal(
-                widget.stockName,
-                _setTarget,
-                _stockDetails['price'].toStringAsFixed(2),
-              ));
-        });
+    Navigator.of(ctx).push(
+      new MaterialPageRoute<Null>(
+        builder: (BuildContext context) {
+          return StockTargetModal(
+            widget.stockName,
+            _setTarget,
+            _stockDetails['price'].toStringAsFixed(2),
+          );
+        },
+        fullscreenDialog: true,
+      ),
+    );
   }
 
   void startTransactionModal(BuildContext ctx, String type) {
-    showModalBottomSheet(
-        context: ctx,
-        builder: (_) {
-          return GestureDetector(
-              onTap: () {
-                FocusScope.of(context).requestFocus(new FocusNode());
-              },
-              child: StockTransactionModal(
-                widget.stockName,
-                _stockTransaction,
-                type,
-                _stockDetails['price'].toStringAsFixed(2),
-              ));
-        });
+    Navigator.of(ctx).push(
+      new MaterialPageRoute<Null>(
+        builder: (BuildContext context) {
+          return StockTransactionModal(
+            widget.stockName,
+            _stockTransaction,
+            type,
+            _stockDetails['price'].toStringAsFixed(2),
+          );
+        },
+        fullscreenDialog: true,
+      ),
+    );
   }
 
   void getStockDetails() {
@@ -432,30 +430,6 @@ class _StockDetailsScreenState extends State<StockDetailsScreen> {
                                             : Theme.of(context)
                                                 .colorScheme
                                                 .error,
-                                      ),
-                                    ),
-                                    SizedBox(width: 18),
-                                    ButtonTheme(
-                                      minWidth: 110,
-                                      child: OutlineButton(
-                                        padding: EdgeInsets.all(10),
-                                        child: Text(
-                                          'SAT',
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 16),
-                                        ),
-                                        shape: RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(20)),
-                                        borderSide:
-                                            BorderSide(color: Colors.white30),
-                                        onPressed: () {
-                                          startTransactionModal(
-                                              context, "sell");
-                                        },
-                                        textTheme: ButtonTextTheme.primary,
-                                        textColor: Colors.white,
                                       ),
                                     ),
                                   ],

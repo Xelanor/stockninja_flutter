@@ -1,10 +1,28 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:http/http.dart' as http;
 
 class TransactionCard extends StatelessWidget {
   final Map transaction;
+  final Function refresh;
 
-  TransactionCard(this.transaction);
+  TransactionCard(this.transaction, this.refresh);
+
+  void deleteTransaction() {
+    var id = transaction['id'];
+    const url = 'http://54.196.2.46/api/transaction/delete';
+    http.post(
+      url,
+      body: json.encode({'id': id}),
+      headers: {"Content-Type": "application/json"},
+    ).then((res) {
+      if (res.statusCode == 200) {
+        refresh();
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -51,7 +69,11 @@ class TransactionCard extends StatelessWidget {
                         tooltip: "Seçenekler",
                         padding: EdgeInsets.only(bottom: 24),
                         offset: Offset(50.0, 50.0),
-                        onSelected: (String selectedValue) {},
+                        onSelected: (String selectedValue) {
+                          if (selectedValue == "delete") {
+                            deleteTransaction();
+                          }
+                        },
                         color: Theme.of(context).colorScheme.primaryVariant,
                         icon: Icon(
                           Icons.more_horiz,

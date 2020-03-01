@@ -5,8 +5,9 @@ import './transaction_card.dart';
 class StockCard extends StatefulWidget {
   final String stockName;
   final Map information;
+  final Function refresh;
 
-  StockCard(this.stockName, this.information);
+  StockCard(this.stockName, this.information, this.refresh);
 
   @override
   _StockCardState createState() => _StockCardState();
@@ -234,7 +235,7 @@ class _StockCardState extends State<StockCard> {
               ? Column(
                   children:
                       widget.information['transactions'].map<Widget>((info) {
-                    return TransactionCard(info);
+                    return TransactionCard(info, widget.refresh);
                   }).toList(),
                 )
               : SizedBox(),

@@ -99,9 +99,10 @@ class _InvestmentsScreenState extends State<InvestmentsScreen> {
                                     .toList()
                                     .map<Widget>((stockName) {
                                   return StockCard(
-                                    stockName,
-                                    _myTransactions['stock_values'][stockName],
-                                  );
+                                      stockName,
+                                      _myTransactions['stock_values']
+                                          [stockName],
+                                      getMyStocks);
                                 }).toList(),
                               ),
                             ],
