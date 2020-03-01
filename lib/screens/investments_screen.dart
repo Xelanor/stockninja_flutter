@@ -23,7 +23,7 @@ class _InvestmentsScreenState extends State<InvestmentsScreen> {
   void getMyStocks() {
     var userId =
         Provider.of<AuthNotifier>(context, listen: false).getUserInfo['id'];
-    const url = 'http://10.0.2.2:5000/api/transaction';
+    const url = 'http://54.196.2.46/api/transaction';
     setState(() {
       _isLoading = true;
     });

@@ -13,7 +13,6 @@ import '../widgets/charts/triple_chart.dart';
 import '../widgets/charts/env_chart.dart';
 import '../widgets/charts/ninja_chart.dart';
 import '../widgets/charts/ninja2_chart.dart';
-import 'package:provider/provider.dart';
 
 import '../providers/authentication.dart';
 import '../widgets/details/stock_target_modal.dart';

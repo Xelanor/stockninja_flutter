@@ -1,8 +1,12 @@
+import 'dart:convert';
+
+import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:provider/provider.dart';
 
 import '../widgets/auth/user_first_input.dart';
+import '../widgets/notifications/notifications.dart';
 import '../providers/authentication.dart';
 
 class SettingsScreen extends StatefulWidget {
@@ -13,8 +17,45 @@ class SettingsScreen extends StatefulWidget {
 }
 
 class _SettingsScreenState extends State<SettingsScreen> {
-  // Timer _timer;
-  // int _start = 120;
+  var _isInit = true;
+  var _isLoading = false;
+  var _notifications = [];
+
+  @override
+  void didChangeDependencies() {
+    if (_isInit) {
+      getNotifications();
+    }
+    _isInit = false;
+    super.didChangeDependencies();
+  }
+
+  void getNotifications() {
+    var userId =
+        Provider.of<AuthNotifier>(context, listen: false).getUserInfo['id'];
+    const url = 'http://54.196.2.46/api/notification';
+    setState(() {
+      _isLoading = true;
+    });
+    http.post(
+      url,
+      body: json.encode({'receiver': userId}),
+      headers: {"Content-Type": "application/json"},
+    ).then(
+      (response) {
+        final extractedData = json.decode(response.body) as List<dynamic>;
+        setState(() {
+          _isLoading = false;
+          _notifications = extractedData;
+        });
+      },
+    ).catchError((err) {
+      print(err);
+      setState(() {
+        _isLoading = false;
+      });
+    });
+  }
 
   void _showlogoutDialog() {
     // flutter defined function
@@ -52,35 +93,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
     Provider.of<AuthNotifier>(context, listen: false).logoutUser();
   }
 
-  // void startTimer() {
-  //   const oneSec = const Duration(seconds: 1);
-  //   _timer = new Timer.periodic(
-  //     oneSec,
-  //     (Timer timer) => setState(
-  //       () {
-  //         if (_start < 1) {
-  //           timer.cancel();
-  //           _passCodePage = false;
-  //         } else {
-  //           _start = _start - 1;
-  //         }
-  //       },
-  //     ),
-  //   );
-  // }
-
-  // @override
-  // void dispose() {
-  //   _timer.cancel();
-  //   super.dispose();
-  // }
-
   @override
   Widget build(BuildContext context) {
     return Consumer<AuthNotifier>(
       builder: (context, auth, child) {
         return SafeArea(
-          child: Column(
+          child: ListView(
+            physics:
+                BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
             children: <Widget>[
               AppBar(
                 title: Text(
@@ -96,67 +116,68 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 width: double.infinity,
                 padding:
                     const EdgeInsets.symmetric(vertical: 0.0, horizontal: 22),
-                child: Column(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: <Widget>[
-                            Text(
-                              'Profil',
+                        Text(
+                          'Profil',
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 40,
+                              fontWeight: FontWeight.bold),
+                        ),
+                        SizedBox(height: 20),
+                        ButtonTheme(
+                          minWidth: 200,
+                          child: RaisedButton(
+                            onPressed: () {
+                              auth.getUserAuthState
+                                  ? _showlogoutDialog()
+                                  : Navigator.of(context).push(
+                                      new MaterialPageRoute<Null>(
+                                        builder: (BuildContext context) {
+                                          return UserFirstInput();
+                                        },
+                                        fullscreenDialog: true,
+                                      ),
+                                    );
+                            },
+                            color: auth.getUserAuthState
+                                ? Theme.of(context).colorScheme.primaryVariant
+                                : Theme.of(context).colorScheme.primary,
+                            child: Text(
+                              auth.getUserAuthState
+                                  ? 'Çıkış Yap'
+                                  : 'Giriş / Kayıt',
                               style: TextStyle(
                                   color: Colors.white,
-                                  fontSize: 40,
-                                  fontWeight: FontWeight.bold),
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w600),
                             ),
-                            SizedBox(height: 20),
-                            ButtonTheme(
-                              minWidth: 200,
-                              child: RaisedButton(
-                                onPressed: () {
-                                  auth.getUserAuthState
-                                      ? _showlogoutDialog()
-                                      : Navigator.of(context).push(
-                                          new MaterialPageRoute<Null>(
-                                            builder: (BuildContext context) {
-                                              return UserFirstInput();
-                                            },
-                                            fullscreenDialog: true,
-                                          ),
-                                        );
-                                },
-                                color: auth.getUserAuthState
-                                    ? Theme.of(context)
-                                        .colorScheme
-                                        .primaryVariant
-                                    : Theme.of(context).colorScheme.primary,
-                                child: Text(
-                                  auth.getUserAuthState
-                                      ? 'Çıkış Yap'
-                                      : 'Giriş / Kayıt',
-                                  style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.w600),
-                                ),
-                              ),
-                            )
-                          ],
-                        ),
-                        Container(
-                          width: 100,
-                          child: Image.asset(
-                            "assets/images/ninja.png",
-                            fit: BoxFit.cover,
                           ),
-                        ),
+                        )
                       ],
-                    )
+                    ),
+                    Container(
+                      width: 100,
+                      child: Image.asset(
+                        "assets/images/ninja.png",
+                        fit: BoxFit.cover,
+                      ),
+                    ),
                   ],
                 ),
               ),
+              SizedBox(height: 20),
+              !_isLoading
+                  ? Notifications(_notifications, getNotifications)
+                  : Center(
+                      child: CircularProgressIndicator(
+                          valueColor: AlwaysStoppedAnimation(
+                              Theme.of(context).primaryColor))),
             ],
           ),
         );
