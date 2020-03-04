@@ -30,6 +30,20 @@ class _SettingsScreenState extends State<SettingsScreen> {
     super.didChangeDependencies();
   }
 
+  void deleteNotification(String id) {
+    const url = 'http://54.196.2.46/api/notification/delete';
+    http.post(
+      url,
+      body: json.encode({'id': id}),
+      headers: {"Content-Type": "application/json"},
+    );
+    var index =
+        _notifications.indexWhere((notif) => notif['_id']['\$oid'] == id);
+    setState(() {
+      _notifications.removeAt(index);
+    });
+  }
+
   void getNotifications() {
     var userId =
         Provider.of<AuthNotifier>(context, listen: false).getUserInfo['id'];
@@ -173,7 +187,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
               ),
               SizedBox(height: 20),
               !_isLoading
-                  ? Notifications(_notifications, getNotifications)
+                  ? Notifications(
+                      _notifications, getNotifications, deleteNotification)
                   : Center(
                       child: CircularProgressIndicator(
                           valueColor: AlwaysStoppedAnimation(

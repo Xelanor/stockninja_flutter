@@ -5,8 +5,9 @@ import './single-notification.dart';
 class Notifications extends StatefulWidget {
   final List notifications;
   final Function refresh;
+  final Function deleteNotification;
 
-  Notifications(this.notifications, this.refresh);
+  Notifications(this.notifications, this.refresh, this.deleteNotification);
 
   @override
   _NotificationsState createState() => _NotificationsState();
@@ -74,6 +75,7 @@ class _NotificationsState extends State<Notifications> {
                 SingleNotification(
                   notification,
                   widget.refresh,
+                  widget.deleteNotification,
                 ),
               ],
             );
@@ -92,6 +94,7 @@ class _NotificationsState extends State<Notifications> {
                 SingleNotification(
                   notification,
                   widget.refresh,
+                  widget.deleteNotification,
                 ),
               ],
             );
@@ -110,6 +113,7 @@ class _NotificationsState extends State<Notifications> {
                 SingleNotification(
                   notification,
                   widget.refresh,
+                  widget.deleteNotification,
                 ),
               ],
             );
@@ -117,6 +121,7 @@ class _NotificationsState extends State<Notifications> {
             return SingleNotification(
               notification,
               widget.refresh,
+              widget.deleteNotification,
             );
           }
         },
