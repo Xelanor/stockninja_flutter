@@ -13,16 +13,6 @@ class ThemeNotifier with ChangeNotifier {
   }
 }
 
-extension CustomColorScheme on ColorScheme {
-  Color get primary => const Color.fromRGBO(46, 196, 182, 1);
-  Color get primaryVariant => const Color.fromRGBO(27, 154, 170, 1);
-  Color get secondary => const Color.fromRGBO(242, 243, 174, 1);
-  Color get success => const Color.fromRGBO(48, 167, 69, 1);
-  Color get surface => const Color.fromRGBO(0, 11, 19, 1);
-  Color get background => const Color.fromRGBO(9, 20, 28, 1);
-  Color get danger => const Color.fromRGBO(231, 29, 54, 1);
-}
-
 final darkTheme = ThemeData(
   fontFamily: 'NunitoSans',
   primaryColor: Color.fromRGBO(46, 196, 182, 1),

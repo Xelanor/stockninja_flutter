@@ -2,7 +2,7 @@ import 'package:charts_flutter/flutter.dart' as charts;
 import 'package:flutter/material.dart';
 
 class Ninja2Chart extends StatefulWidget {
-  List<dynamic> data;
+  final List<dynamic> data;
   final int graphPeriod;
 
   Ninja2Chart(this.data, this.graphPeriod);
@@ -12,9 +12,12 @@ class Ninja2Chart extends StatefulWidget {
 }
 
 class _Ninja2ChartState extends State<Ninja2Chart> {
+  var data;
+
   @override
   Widget build(BuildContext context) {
-    widget.data = widget.data.map((d) => d * 100).toList();
+    data = widget.data.map((d) => d * 100).toList();
+
     List<charts.Series<dynamic, int>> series = [
       charts.Series(
         id: "Ninja2",

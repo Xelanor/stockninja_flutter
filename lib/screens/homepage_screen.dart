@@ -23,13 +23,13 @@ class _HomepageScreenState extends State<HomepageScreen> {
   var _myStocks = [];
 
   bool removeMyStock(stockName) {
-    if (_showlogoutDialog(stockName) == true) {
+    if (_showRemoveStockDialog(stockName) == true) {
       return true;
     }
     return false;
   }
 
-  bool _showlogoutDialog(stockName) {
+  bool _showRemoveStockDialog(stockName) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -70,6 +70,7 @@ class _HomepageScreenState extends State<HomepageScreen> {
         );
       },
     );
+    return false;
   }
 
   @override

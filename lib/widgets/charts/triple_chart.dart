@@ -3,12 +3,12 @@ import 'package:flutter/material.dart';
 
 class TripleChart extends StatefulWidget {
   final List<dynamic> closes;
-  final List<dynamic> first_list;
-  final List<dynamic> second_list;
-  final List<dynamic> third_list;
+  final List<dynamic> firstList;
+  final List<dynamic> secondList;
+  final List<dynamic> thirdList;
   final int graphPeriod;
 
-  TripleChart(this.closes, this.first_list, this.second_list, this.third_list,
+  TripleChart(this.closes, this.firstList, this.secondList, this.thirdList,
       this.graphPeriod);
 
   @override
@@ -29,21 +29,21 @@ class _TripleChartState extends State<TripleChart> {
       ),
       charts.Series(
         id: "First",
-        data: widget.first_list.sublist(90 - widget.graphPeriod, 90),
+        data: widget.firstList.sublist(90 - widget.graphPeriod, 90),
         domainFn: (point, i) => i,
         measureFn: (point, i) => point,
         colorFn: (_, __) => charts.ColorUtil.fromDartColor(Colors.green),
       ),
       charts.Series(
         id: "Second",
-        data: widget.second_list.sublist(90 - widget.graphPeriod, 90),
+        data: widget.secondList.sublist(90 - widget.graphPeriod, 90),
         domainFn: (point, i) => i,
         measureFn: (point, i) => point,
         colorFn: (_, __) => charts.ColorUtil.fromDartColor(Colors.orange),
       ),
       charts.Series(
         id: "Third",
-        data: widget.third_list.sublist(90 - widget.graphPeriod, 90),
+        data: widget.thirdList.sublist(90 - widget.graphPeriod, 90),
         domainFn: (point, i) => i,
         measureFn: (point, i) => point,
         colorFn: (_, __) => charts.ColorUtil.fromDartColor(Colors.red),

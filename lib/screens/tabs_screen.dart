@@ -6,8 +6,6 @@ import '../screens/search_screen.dart';
 import '../screens/global_screen.dart';
 import '../screens/settings_screen.dart';
 
-import '../utils/theme.dart';
-
 class TabsScreen extends StatefulWidget {
   @override
   _TabsScreenState createState() => _TabsScreenState();
@@ -17,19 +15,35 @@ class _TabsScreenState extends State<TabsScreen> {
   final List<Map<String, Object>> _pages = [
     {'page': HomepageScreen(), 'title': 'StockNinja'},
     {
-      'page': WillPopScope(child: InvestmentsScreen(), onWillPop: () {}),
+      'page': WillPopScope(
+          child: InvestmentsScreen(),
+          onWillPop: () {
+            return;
+          }),
       'title': 'Stocks'
     },
     {
-      'page': WillPopScope(child: GlobalScreen(), onWillPop: () {}),
+      'page': WillPopScope(
+          child: GlobalScreen(),
+          onWillPop: () {
+            return;
+          }),
       'title': 'Global'
     },
     {
-      'page': WillPopScope(child: SearchScreen(), onWillPop: () {}),
+      'page': WillPopScope(
+          child: SearchScreen(),
+          onWillPop: () {
+            return;
+          }),
       'title': 'Tüm Hisseler'
     },
     {
-      'page': WillPopScope(child: SettingsScreen(), onWillPop: () {}),
+      'page': WillPopScope(
+          child: SettingsScreen(),
+          onWillPop: () {
+            return;
+          }),
       'title': 'Ayarlar'
     },
   ];
@@ -50,22 +64,6 @@ class _TabsScreenState extends State<TabsScreen> {
       },
       child: Scaffold(
         backgroundColor: Theme.of(context).colorScheme.background,
-        // appBar: AppBar(
-        //   title: Text(
-        //     _pages[_selectedPageIndex]['title'],
-        //     style: TextStyle(
-        //         color: Theme.of(context).colorScheme.onBackground,
-        //         fontWeight: FontWeight.bold),
-        //   ),
-        //   backgroundColor: Theme.of(context).colorScheme.surface,
-        //   brightness: Theme.of(context).brightness,
-        //   actions: <Widget>[
-        //     Icon(
-        //       Icons.add,
-        //       color: Colors.white,
-        //     )
-        //   ],
-        // ),
         body: _pages[_selectedPageIndex]['page'],
         bottomNavigationBar: BottomNavigationBar(
           type: BottomNavigationBarType.fixed,

@@ -37,6 +37,7 @@ class StockTableMyRow extends StatelessWidget {
             ),
           );
         }
+        return;
       },
       child: InkWell(
         onTap: () {
