@@ -14,7 +14,7 @@ class Notifications extends StatefulWidget {
 }
 
 class _NotificationsState extends State<Notifications> {
-  var indexes = [0, 0, 0];
+  var indexes = [-1, -1, -1];
   int calculateDifference(int date) {
     var notifDate = DateTime.fromMillisecondsSinceEpoch(date);
     DateTime now = DateTime.now();
@@ -27,15 +27,22 @@ class _NotificationsState extends State<Notifications> {
     for (var i = 0; i < widget.notifications.length; i++) {
       var notification = widget.notifications[i];
       var difference = calculateDifference(notification['createdAt']['\$date']);
+      if (difference == 0) {
+        if (indexes[0] != -1) {
+          continue;
+        } else {
+          indexes[0] = i;
+        }
+      }
       if (difference == -1) {
-        if (indexes[1] != 0) {
+        if (indexes[1] != -1) {
           continue;
         } else {
           indexes[1] = i;
         }
       }
       if (difference <= -2) {
-        if (indexes[2] != 0) {
+        if (indexes[2] != -1) {
           continue;
         } else {
           indexes[2] = i;
@@ -60,7 +67,7 @@ class _NotificationsState extends State<Notifications> {
         itemCount: widget.notifications.length,
         itemBuilder: (_, i) {
           var notification = widget.notifications[i];
-          if (i == 0) {
+          if (i == indexes[0]) {
             return Column(
               children: <Widget>[
                 Container(
