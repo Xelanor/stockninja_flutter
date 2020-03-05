@@ -36,7 +36,7 @@ class ConsecutiveAnalysisInfo extends StatelessWidget {
             padding: const EdgeInsets.all(10.0),
             child: decreasing.length == 0
                 ? Text(
-                    'Değer kazanan hisse senedi bulunmamaktadır.',
+                    'Değer kaybeden hisse senedi bulunmamaktadır.',
                     style: TextStyle(
                         color: Theme.of(context).colorScheme.secondary),
                   )

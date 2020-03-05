@@ -48,7 +48,6 @@ class _NotificationsState extends State<Notifications> {
           indexes[2] = i;
         }
       }
-      print(indexes);
     }
   }
 
