@@ -12,24 +12,24 @@ class StockTargetModal extends StatefulWidget {
 }
 
 class _StockTargetModalState extends State<StockTargetModal> {
-  var _buyTargetController;
-  var _sellTargetController;
+  double _buyTarget;
+  double _sellTarget;
 
   @override
   void initState() {
-    _buyTargetController = TextEditingController(text: widget.currentPrice);
-    _sellTargetController = TextEditingController(text: widget.currentPrice);
+    _buyTarget = double.parse(widget.currentPrice);
+    _sellTarget = double.parse(widget.currentPrice);
     super.initState();
   }
 
   void _submitData(type) {
     if (type == "buy") {
-      final enteredBuyTarget = double.parse(_buyTargetController.text);
+      final enteredBuyTarget = double.parse(_buyTarget.toStringAsFixed(2));
       widget.setTarget(type, enteredBuyTarget);
     }
 
     if (type == "sell") {
-      final enteredSellTarget = double.parse(_sellTargetController.text);
+      final enteredSellTarget = double.parse(_sellTarget.toStringAsFixed(2));
       widget.setTarget(type, enteredSellTarget);
     }
 
@@ -53,48 +53,106 @@ class _StockTargetModalState extends State<StockTargetModal> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: <Widget>[
-              Container(
-                alignment: Alignment.center,
-                child: Text(
-                  "Hedef Gir",
-                  style: TextStyle(
-                      fontSize: 20,
-                      color: Theme.of(context).colorScheme.primary),
-                ),
-              ),
-              TextField(
-                keyboardType: TextInputType.number,
-                decoration: InputDecoration(
-                  labelText: 'Alış Hedefi',
-                  labelStyle: TextStyle(color: Colors.white),
-                  enabledBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: Colors.white),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Container(
+                    alignment: Alignment.center,
+                    child: Text(
+                      "Şu anki Fiyat: ",
+                      style: TextStyle(
+                          fontSize: 20,
+                          color: Theme.of(context).colorScheme.primaryVariant),
+                    ),
                   ),
-                ),
-                controller: _buyTargetController,
-                onSubmitted: (_) => _submitData("buy"),
-              ),
-              RaisedButton(
-                child: Text('Alış Hedefi Gir'),
-                textColor: Colors.black,
-                onPressed: () => _submitData("buy"),
-              ),
-              TextField(
-                decoration: InputDecoration(
-                  labelText: 'Satış Hedefi',
-                  labelStyle: TextStyle(color: Colors.white),
-                  enabledBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: Colors.white),
+                  Container(
+                    alignment: Alignment.center,
+                    child: Text(
+                      "${widget.currentPrice}",
+                      style: TextStyle(
+                          fontSize: 20,
+                          color: Theme.of(context).colorScheme.primary),
+                    ),
                   ),
-                ),
-                controller: _sellTargetController,
-                keyboardType: TextInputType.number,
-                onSubmitted: (_) => _submitData("sell"),
+                ],
               ),
-              RaisedButton(
-                child: Text('Satış Hedefi Gir'),
-                textColor: Colors.black,
-                onPressed: () => _submitData("sell"),
+              SizedBox(height: 20),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  Text(
+                    'Alış Hedefi: ${_buyTarget.toStringAsFixed(2)}',
+                    style: TextStyle(fontSize: 15),
+                  ),
+                  Expanded(
+                    child: Slider(
+                      value: _buyTarget.toDouble(),
+                      min: double.parse(widget.currentPrice) * 0.85,
+                      max: double.parse(widget.currentPrice) * 1.15,
+                      divisions: 100,
+                      label: '${_buyTarget.toStringAsFixed(2)}',
+                      onChanged: (double newValue) {
+                        setState(() {
+                          _buyTarget = newValue;
+                        });
+                      },
+                    ),
+                  ),
+                ],
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  RaisedButton(
+                    child: Text(
+                      'Alış Hedefi Gir',
+                      style: TextStyle(
+                        fontSize: 16,
+                      ),
+                    ),
+                    textColor: Colors.black,
+                    onPressed: () => _submitData("buy"),
+                  ),
+                ],
+              ),
+              SizedBox(height: 30),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  Text(
+                    'Satış Hedefi: ${_sellTarget.toStringAsFixed(2)}',
+                    style: TextStyle(fontSize: 15),
+                  ),
+                  Expanded(
+                    child: Slider(
+                      value: _sellTarget.toDouble(),
+                      min: double.parse(widget.currentPrice) * 0.9,
+                      max: double.parse(widget.currentPrice) * 1.1,
+                      divisions: 100,
+                      label: '${_sellTarget.toStringAsFixed(2)}',
+                      onChanged: (double newValue) {
+                        setState(() {
+                          _sellTarget = newValue;
+                        });
+                      },
+                    ),
+                  ),
+                ],
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  RaisedButton(
+                    child: Text(
+                      'Satış Hedefi Gir',
+                      style: TextStyle(
+                        fontSize: 16,
+                      ),
+                    ),
+                    textColor: Colors.black,
+                    onPressed: () => _submitData("sell"),
+                  ),
+                ],
               ),
             ],
           ),
