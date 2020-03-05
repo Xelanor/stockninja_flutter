@@ -5,8 +5,7 @@ import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 
 import '../providers/authentication.dart';
-import '../widgets/table/stock_table_header.dart';
-import '../widgets/table/stock_table_search_row.dart';
+import '../widgets/search/stocks_search.dart';
 
 class SearchScreen extends StatefulWidget {
   static const routeName = '/search-screen';
@@ -15,14 +14,16 @@ class SearchScreen extends StatefulWidget {
   _SearchScreenState createState() => _SearchScreenState();
 }
 
-class _SearchScreenState extends State<SearchScreen> {
-  final _searchController = TextEditingController();
+class _SearchScreenState extends State<SearchScreen>
+    with SingleTickerProviderStateMixin {
+  TabController _controller;
+  int _currentIndex = 0;
   var _isInit = true;
   var _isLoading = false;
   var _myStocks = [];
   var _showedStocks = [];
 
-  void addToMyStock(stockName) {
+  void addToMyStocks(stockName) {
     var userId =
         Provider.of<AuthNotifier>(context, listen: false).getUserInfo['id'];
     const url = 'http://54.196.2.46/api/portfolio/add';
@@ -94,10 +95,18 @@ class _SearchScreenState extends State<SearchScreen> {
   }
 
   void getMyStocks() {
-    const url = 'http://54.196.2.46/api/ticker/all';
+    const stockUrl = 'http://54.196.2.46/api/ticker/all';
+    const currencyUrl = 'http://54.196.2.46/api/ticker/currencies';
+    var url;
     setState(() {
+      _showedStocks.clear();
       _isLoading = true;
     });
+    if (_currentIndex == 0) {
+      url = stockUrl;
+    } else if (_currentIndex == 1) {
+      url = currencyUrl;
+    }
     http.get(url).then(
       (response) {
         final extractedData = json.decode(response.body) as List<dynamic>;
@@ -125,103 +134,98 @@ class _SearchScreenState extends State<SearchScreen> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    _controller = TabController(vsync: this, length: 2);
+    _controller.addListener(_handleTabSelection);
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Column(
-      children: <Widget>[
-        AppBar(
-          title: Text(
-            'Search',
-            style: TextStyle(
-                color: Theme.of(context).colorScheme.onBackground,
-                fontWeight: FontWeight.bold),
-          ),
-          backgroundColor: Theme.of(context).colorScheme.surface,
-          brightness: Theme.of(context).brightness,
-          actions: <Widget>[
-            PopupMenuButton(
-              offset: Offset(50.0, 50.0),
-              onSelected: (String selectedValue) {
-                filterOptionResults(selectedValue);
-              },
-              color: Theme.of(context).colorScheme.primaryVariant,
-              icon: Icon(
-                Icons.more_horiz,
-                color: Colors.white,
+    return DefaultTabController(
+      length: 2,
+      child: Column(
+        children: <Widget>[
+          AppBar(
+            title: Text(
+              'Search',
+              style: TextStyle(
+                  color: Theme.of(context).colorScheme.onBackground,
+                  fontWeight: FontWeight.bold),
+            ),
+            backgroundColor: Theme.of(context).colorScheme.surface,
+            brightness: Theme.of(context).brightness,
+            actions: <Widget>[
+              PopupMenuButton(
+                offset: Offset(50.0, 50.0),
+                onSelected: (String selectedValue) {
+                  filterOptionResults(selectedValue);
+                },
+                color: Theme.of(context).colorScheme.primaryVariant,
+                icon: Icon(
+                  Icons.more_horiz,
+                  color: Colors.white,
+                ),
+                itemBuilder: (_) => [
+                  PopupMenuItem(
+                      child: (Text('Sadece Yükselenler')), value: "increasing"),
+                  PopupMenuItem(
+                      child: (Text('Sadece Düşenler')), value: "decreasing"),
+                  PopupMenuItem(child: (Text('Tümünü Göster')), value: "all"),
+                ],
               ),
-              itemBuilder: (_) => [
-                PopupMenuItem(
-                    child: (Text('Sadece Yükselenler')), value: "increasing"),
-                PopupMenuItem(
-                    child: (Text('Sadece Düşenler')), value: "decreasing"),
-                PopupMenuItem(child: (Text('Tümünü Göster')), value: "all"),
+            ],
+          ),
+          Container(
+            height: 40,
+            child: TabBar(
+              controller: _controller,
+              indicatorColor: Colors.white60,
+              labelColor: Colors.white,
+              tabs: <Widget>[
+                Text(
+                  "Hisseler",
+                  style: TextStyle(fontSize: 16),
+                ),
+                Text(
+                  "Dolar / Altın",
+                  style: TextStyle(fontSize: 16),
+                ),
               ],
             ),
-          ],
-        ),
-        Expanded(
-          child: _isLoading
-              ? Center(
-                  child: CircularProgressIndicator(
-                      valueColor: AlwaysStoppedAnimation(
-                          Theme.of(context).primaryColor)))
-              : GestureDetector(
-                  onTap: () {
-                    FocusScope.of(context).requestFocus(new FocusNode());
-                  },
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
+          ),
+          Expanded(
+            child: _isLoading
+                ? Center(
+                    child: CircularProgressIndicator(
+                        valueColor: AlwaysStoppedAnimation(
+                            Theme.of(context).primaryColor)))
+                : TabBarView(
+                    controller: _controller,
                     children: <Widget>[
-                      StockTableHeader(),
-                      Container(
-                        margin: EdgeInsets.only(left: 5, right: 5, bottom: 5),
-                        height: 40,
-                        child: TextField(
-                          onChanged: (value) {
-                            filterSearchResults(value);
-                          },
-                          textCapitalization: TextCapitalization.characters,
-                          controller: _searchController,
-                          decoration: InputDecoration(
-                              fillColor:
-                                  Theme.of(context).colorScheme.background,
-                              filled: true,
-                              contentPadding: EdgeInsets.all(0),
-                              labelText: "Search",
-                              hintText: "Search",
-                              prefixIcon: Icon(Icons.search),
-                              suffixIcon: _searchController.text != ""
-                                  ? IconButton(
-                                      icon: Icon(Icons.clear),
-                                      onPressed: () {
-                                        setState(() {
-                                          _searchController.clear();
-                                          filterSearchResults(
-                                              _searchController.text);
-                                        });
-                                      })
-                                  : null,
-                              border: OutlineInputBorder(
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(10.0)))),
-                        ),
+                      StocksSearch(
+                        _showedStocks,
+                        filterSearchResults,
+                        addToMyStocks,
+                        refresh,
                       ),
-                      Expanded(
-                        child: RefreshIndicator(
-                          onRefresh: refresh,
-                          child: ListView.builder(
-                            padding: EdgeInsets.all(0),
-                            physics: BouncingScrollPhysics(),
-                            itemCount: _showedStocks.length,
-                            itemBuilder: (_, i) => StockTableSearchRow(
-                                _showedStocks[i], addToMyStock),
-                          ),
-                        ),
+                      StocksSearch(
+                        _showedStocks,
+                        filterSearchResults,
+                        addToMyStocks,
+                        refresh,
                       ),
                     ],
                   ),
-                ),
-        ),
-      ],
+          ),
+        ],
+      ),
     );
   }
 
@@ -238,5 +242,12 @@ class _SearchScreenState extends State<SearchScreen> {
       print(err);
     });
     return Future.value();
+  }
+
+  _handleTabSelection() {
+    setState(() {
+      _currentIndex = _controller.index;
+    });
+    getMyStocks();
   }
 }
