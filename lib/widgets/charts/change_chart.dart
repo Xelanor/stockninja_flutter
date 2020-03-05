@@ -11,6 +11,7 @@ class ChangeChart extends StatefulWidget {
 }
 
 class _ChangeChartState extends State<ChangeChart> {
+  static const secondaryMeasureAxisId = 'secondaryMeasureAxisId';
   var _increasing = [];
   var _decreasing = [];
   var _bist = [];
@@ -18,7 +19,6 @@ class _ChangeChartState extends State<ChangeChart> {
   @override
   void didChangeDependencies() {
     var _events = widget.events.reversed.toList().sublist(36, 66);
-    print(widget.events);
     for (var i = 0; i < _events.length; i++) {
       _increasing.add(_events[i]['increasing']);
       _decreasing.add(_events[i]['decreasing']);
@@ -40,14 +40,16 @@ class _ChangeChartState extends State<ChangeChart> {
         data: _increasing,
         domainFn: (point, i) => i,
         measureFn: (point, i) => point,
-        colorFn: (_, __) => charts.ColorUtil.fromDartColor(Colors.green),
+        colorFn: (_, __) =>
+            charts.ColorUtil.fromDartColor(Color.fromRGBO(124, 252, 0, 0.5)),
       ),
       charts.Series(
         id: "Decreasing",
         data: _decreasing,
         domainFn: (point, i) => i,
         measureFn: (point, i) => point,
-        colorFn: (_, __) => charts.ColorUtil.fromDartColor(Colors.red),
+        colorFn: (_, __) =>
+            charts.ColorUtil.fromDartColor(Color.fromRGBO(255, 64, 64, 0.5)),
       ),
       charts.Series(
         id: "Bist",
@@ -56,7 +58,7 @@ class _ChangeChartState extends State<ChangeChart> {
         measureFn: (point, i) => point,
         colorFn: (_, __) =>
             charts.ColorUtil.fromDartColor(Color.fromRGBO(134, 65, 244, 1)),
-      ),
+      )..setAttribute(charts.measureAxisIdKey, secondaryMeasureAxisId),
     ];
 
     return Container(
@@ -79,9 +81,10 @@ class _ChangeChartState extends State<ChangeChart> {
               ),
               primaryMeasureAxis: charts.NumericAxisSpec(
                 tickProviderSpec: charts.BasicNumericTickProviderSpec(
-                    dataIsInWholeNumbers: false,
-                    zeroBound: false,
-                    desiredTickCount: 5),
+                  dataIsInWholeNumbers: false,
+                  zeroBound: false,
+                  desiredTickCount: 5,
+                ),
                 renderSpec: charts.GridlineRendererSpec(
                   labelOffsetFromAxisPx: 15,
                   labelStyle: charts.TextStyleSpec(
@@ -89,7 +92,24 @@ class _ChangeChartState extends State<ChangeChart> {
                       color: charts.ColorUtil.fromDartColor(Colors.grey[300])),
                   lineStyle: charts.LineStyleSpec(
                     color: charts.ColorUtil.fromDartColor(
-                        Color.fromRGBO(194, 79, 61, 0.4)),
+                        Color.fromRGBO(0, 79, 61, 0.4)),
+                  ),
+                ),
+              ),
+              secondaryMeasureAxis: charts.NumericAxisSpec(
+                tickProviderSpec: charts.BasicNumericTickProviderSpec(
+                  dataIsInWholeNumbers: false,
+                  zeroBound: false,
+                  desiredTickCount: 5,
+                ),
+                renderSpec: charts.GridlineRendererSpec(
+                  labelOffsetFromAxisPx: 15,
+                  labelStyle: charts.TextStyleSpec(
+                      fontSize: 12, // size in Pts.
+                      color: charts.ColorUtil.fromDartColor(Colors.grey[300])),
+                  lineStyle: charts.LineStyleSpec(
+                    color: charts.ColorUtil.fromDartColor(
+                        Color.fromRGBO(0, 79, 61, 0.4)),
                   ),
                 ),
               ),
