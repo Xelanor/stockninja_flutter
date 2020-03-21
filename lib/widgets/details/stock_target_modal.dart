@@ -60,9 +60,7 @@ class _StockTargetModalState extends State<StockTargetModal> {
                     alignment: Alignment.center,
                     child: Text(
                       "Şu anki Fiyat: ",
-                      style: TextStyle(
-                          fontSize: 20,
-                          color: Theme.of(context).colorScheme.primaryVariant),
+                      style: TextStyle(fontSize: 20, color: Colors.white),
                     ),
                   ),
                   Container(

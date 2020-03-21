@@ -186,8 +186,9 @@ class _SearchScreenState extends State<SearchScreen>
             height: 40,
             child: TabBar(
               controller: _controller,
-              indicatorColor: Colors.white60,
-              labelColor: Colors.white,
+              indicatorColor: Theme.of(context).colorScheme.primary,
+              labelColor: Theme.of(context).colorScheme.primary,
+              unselectedLabelColor: Colors.grey,
               tabs: <Widget>[
                 Text(
                   "Hisseler",
@@ -200,6 +201,7 @@ class _SearchScreenState extends State<SearchScreen>
               ],
             ),
           ),
+          SizedBox(height: 10),
           Expanded(
             child: _isLoading
                 ? Center(

@@ -32,7 +32,6 @@ class _StocksSearchState extends State<StocksSearch> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         children: <Widget>[
-          StockTableHeader(),
           Container(
             margin: EdgeInsets.only(left: 5, right: 5, bottom: 5),
             height: 40,
@@ -64,6 +63,7 @@ class _StocksSearchState extends State<StocksSearch> {
                       borderRadius: BorderRadius.all(Radius.circular(10.0)))),
             ),
           ),
+          StockTableHeader(),
           Expanded(
             child: RefreshIndicator(
               onRefresh: widget.refresh,
