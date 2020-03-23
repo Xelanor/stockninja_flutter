@@ -3,15 +3,25 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
 
-class TransactionCard extends StatelessWidget {
+import '../../providers/authentication.dart';
+import '../investments/stock_sell_modal.dart';
+
+class TransactionCard extends StatefulWidget {
+  final String stockName;
   final Map transaction;
   final Function refresh;
 
-  TransactionCard(this.transaction, this.refresh);
+  TransactionCard(this.stockName, this.transaction, this.refresh);
 
+  @override
+  _TransactionCardState createState() => _TransactionCardState();
+}
+
+class _TransactionCardState extends State<TransactionCard> {
   void deleteTransaction() {
-    var id = transaction['id'];
+    var id = widget.transaction['id'];
     const url = 'http://54.196.2.46/api/transaction/delete';
     http.post(
       url,
@@ -19,9 +29,44 @@ class TransactionCard extends StatelessWidget {
       headers: {"Content-Type": "application/json"},
     ).then((res) {
       if (res.statusCode == 200) {
-        refresh();
+        widget.refresh();
       }
     });
+  }
+
+  void sellTransaction(price, amount) {
+    var userId =
+        Provider.of<AuthNotifier>(context, listen: false).getUserInfo['id'];
+    const url = "http://54.196.2.46/api/transaction/sell";
+    var profit = (price - widget.transaction['purchased_price']) * amount;
+    http.post(url,
+        body: json.encode({
+          'id': widget.transaction['id'],
+          'user': userId,
+          'name': widget.stockName,
+          'price': price,
+          'amount': amount,
+          'profit': profit,
+          'kind': "sell"
+        }),
+        headers: {"Content-Type": "application/json"}).then((_) {
+      widget.refresh();
+    });
+  }
+
+  void startSellTransactionModal(BuildContext ctx) {
+    Navigator.of(ctx).push(
+      new MaterialPageRoute<Null>(
+        builder: (BuildContext context) {
+          return StockSellTransactionModal(
+            sellTransaction,
+            widget.transaction['purchased_price'].toStringAsFixed(2),
+            widget.transaction['remaining'].toStringAsFixed(2),
+          );
+        },
+        fullscreenDialog: true,
+      ),
+    );
   }
 
   @override
@@ -47,7 +92,7 @@ class TransactionCard extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
                     Text(
-                      '${DateFormat('dd.MM.yyyy').add_Hm().format(date(transaction['date']))}',
+                      '${DateFormat('dd.MM.yyyy').add_Hm().format(date(widget.transaction['date']))}',
                       style: TextStyle(
                         fontSize: 12,
                         color: Colors.white,
@@ -55,7 +100,7 @@ class TransactionCard extends StatelessWidget {
                       ),
                     ),
                     Text(
-                      '${transaction['informCount']}',
+                      '${widget.transaction['informCount']}',
                       style: TextStyle(
                         fontSize: 18,
                         color: Theme.of(context).colorScheme.secondary,
@@ -72,6 +117,8 @@ class TransactionCard extends StatelessWidget {
                         onSelected: (String selectedValue) {
                           if (selectedValue == "delete") {
                             deleteTransaction();
+                          } else if (selectedValue == "sell") {
+                            startSellTransactionModal(context);
                           }
                         },
                         color: Theme.of(context).colorScheme.primaryVariant,
@@ -81,12 +128,19 @@ class TransactionCard extends StatelessWidget {
                         ),
                         itemBuilder: (_) => [
                           PopupMenuItem(
-                              height: 18,
+                              height: 24,
                               child: (Text(
                                 'Sil',
                                 style: TextStyle(fontSize: 14),
                               )),
                               value: "delete"),
+                          PopupMenuItem(
+                              height: 24,
+                              child: (Text(
+                                'Sat',
+                                style: TextStyle(fontSize: 14),
+                              )),
+                              value: "sell"),
                         ],
                       ),
                     ),
@@ -102,7 +156,7 @@ class TransactionCard extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
                         Text(
-                          '${transaction['amount'].toStringAsFixed(0)}',
+                          '${widget.transaction['remaining'].toStringAsFixed(0)}',
                           style: TextStyle(
                             fontSize: 16,
                             color: Colors.white,
@@ -119,7 +173,7 @@ class TransactionCard extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: <Widget>[
                         Text(
-                          '${transaction['current_value'].toStringAsFixed(2)}',
+                          '${widget.transaction['current_value'].toStringAsFixed(2)}',
                           style: TextStyle(
                             fontSize: 16,
                             color: Colors.white,
@@ -145,7 +199,7 @@ class TransactionCard extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
                         Text(
-                          '${transaction['purchased_price'].toStringAsFixed(2)}',
+                          '${widget.transaction['purchased_price'].toStringAsFixed(2)}',
                           style: TextStyle(
                             fontSize: 16,
                             color: Colors.white,
@@ -162,10 +216,10 @@ class TransactionCard extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: <Widget>[
                         Text(
-                          '${transaction['profit_loss'].toStringAsFixed(2)}',
+                          '${widget.transaction['profit_loss'].toStringAsFixed(2)}',
                           style: TextStyle(
                             fontSize: 16,
-                            color: transaction['profit_rate'] >= 0
+                            color: widget.transaction['profit_rate'] >= 0
                                 ? Theme.of(context).colorScheme.onSecondary
                                 : Theme.of(context).colorScheme.error,
                             fontWeight: FontWeight.w600,
@@ -189,10 +243,10 @@ class TransactionCard extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: <Widget>[
                         Text(
-                          '% ${transaction['profit_rate'].toStringAsFixed(2)}',
+                          '% ${widget.transaction['profit_rate'].toStringAsFixed(2)}',
                           style: TextStyle(
                               fontSize: 18,
-                              color: transaction['profit_rate'] >= 0
+                              color: widget.transaction['profit_rate'] >= 0
                                   ? Theme.of(context).colorScheme.onSecondary
                                   : Theme.of(context).colorScheme.error,
                               fontWeight: FontWeight.w600),

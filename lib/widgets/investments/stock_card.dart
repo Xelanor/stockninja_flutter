@@ -77,7 +77,7 @@ class _StockCardState extends State<StockCard> {
                                 crossAxisAlignment: CrossAxisAlignment.end,
                                 children: <Widget>[
                                   Text(
-                                    '${widget.information['amount']}',
+                                    '${widget.information['remaining']}',
                                     style: TextStyle(
                                         fontSize: 14,
                                         color: Colors.white,
@@ -235,7 +235,11 @@ class _StockCardState extends State<StockCard> {
               ? Column(
                   children:
                       widget.information['transactions'].map<Widget>((info) {
-                    return TransactionCard(info, widget.refresh);
+                    return TransactionCard(
+                      widget.stockName,
+                      info,
+                      widget.refresh,
+                    );
                   }).toList(),
                 )
               : SizedBox(),

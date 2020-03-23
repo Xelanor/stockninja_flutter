@@ -75,6 +75,7 @@ class _StockDetailsScreenState extends State<StockDetailsScreen> {
           'name': widget.stockName,
           'price': price,
           'amount': amount,
+          'remaining': amount,
           'kind': type
         }),
         headers: {"Content-Type": "application/json"}).then((_) {});
