@@ -30,13 +30,21 @@ class _IntradayChartState extends State<IntradayChart> {
       child: Column(
         children: <Widget>[
           Text(
-            'Gün İçi Hareketler',
+            '2 günlük hareketler',
             style: TextStyle(fontSize: 20),
           ),
           Expanded(
             child: charts.LineChart(
               series,
               animate: true,
+              behaviors: [
+                new charts.RangeAnnotation([
+                  new charts.RangeAnnotationSegment(0, widget.data.length / 2,
+                      charts.RangeAnnotationAxisType.domain,
+                      color:
+                          charts.ColorUtil.fromDartColor(Colors.grey.shade900)),
+                ]),
+              ],
               domainAxis: charts.NumericAxisSpec(
                 renderSpec: charts.NoneRenderSpec(),
               ),

@@ -115,9 +115,9 @@ class _StockTransactioneModalState extends State<StockTransactionModal> {
                   IconButton(
                     onPressed: () {
                       setState(() {
-                        var amount = double.parse(_amountController.text) - 0.1;
-                        if (amount <= 0.1) {
-                          amount = 0.1;
+                        var amount = double.parse(_amountController.text) - 1;
+                        if (amount <= 1) {
+                          amount = 1;
                         }
                         _amountController.text = amount.toStringAsFixed(2);
                       });
@@ -150,7 +150,7 @@ class _StockTransactioneModalState extends State<StockTransactionModal> {
                   IconButton(
                     onPressed: () {
                       setState(() {
-                        var price = double.parse(_amountController.text) + 0.1;
+                        var price = double.parse(_amountController.text) + 1;
                         _amountController.text = price.toStringAsFixed(2);
                       });
                     },
