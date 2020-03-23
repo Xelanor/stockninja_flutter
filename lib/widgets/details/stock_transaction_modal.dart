@@ -3,11 +3,10 @@ import 'package:flutter/material.dart';
 class StockTransactionModal extends StatefulWidget {
   final String stockName;
   final Function transactionFunc;
-  final String type;
   final String currentPrice;
 
   StockTransactionModal(
-      this.stockName, this.transactionFunc, this.type, this.currentPrice);
+      this.stockName, this.transactionFunc, this.currentPrice);
 
   @override
   _StockTransactioneModalState createState() => _StockTransactioneModalState();
@@ -27,7 +26,7 @@ class _StockTransactioneModalState extends State<StockTransactionModal> {
   void _submitData() {
     final _enteredPrice = double.parse(_priceController.text);
     final _enteredAmount = int.parse(_amountController.text);
-    widget.transactionFunc(widget.type, _enteredPrice, _enteredAmount);
+    widget.transactionFunc(_enteredPrice, _enteredAmount);
 
     Navigator.of(context).pop();
   }
@@ -50,43 +49,122 @@ class _StockTransactioneModalState extends State<StockTransactionModal> {
             crossAxisAlignment: CrossAxisAlignment.end,
             children: <Widget>[
               Container(
-                alignment: Alignment.center,
+                alignment: Alignment.centerLeft,
                 child: Text(
-                  widget.type == "buy"
-                      ? "Hisse Senedi Satın Al"
-                      : "Hisse Senedi Sat",
-                  style: TextStyle(
-                      fontSize: 20,
-                      color: Theme.of(context).colorScheme.primary),
+                  "Hisse Senedi Satın Al",
+                  style: TextStyle(fontSize: 24, color: Colors.white),
                 ),
               ),
-              TextField(
-                keyboardType: TextInputType.number,
-                decoration: InputDecoration(
-                  labelText: 'Price',
-                  labelStyle: TextStyle(color: Colors.white),
-                  enabledBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: Colors.white),
+              SizedBox(height: 10),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  IconButton(
+                    onPressed: () {
+                      setState(() {
+                        var price = double.parse(_priceController.text) - 0.01;
+                        if (price <= 0.01) {
+                          price = 0.01;
+                        }
+                        _priceController.text = price.toStringAsFixed(2);
+                      });
+                    },
+                    iconSize: 60,
+                    icon: Icon(
+                      Icons.arrow_left,
+                      color: Theme.of(context).colorScheme.primary,
+                    ),
                   ),
-                ),
-                controller: _priceController,
-                onSubmitted: (_) => _submitData(),
+                  Container(
+                    margin: EdgeInsets.all(10),
+                    width: 70,
+                    child: TextField(
+                      textAlign: TextAlign.center,
+                      keyboardType: TextInputType.number,
+                      decoration: InputDecoration(
+                        contentPadding: EdgeInsets.only(top: 3),
+                        labelText: 'Price',
+                        labelStyle: TextStyle(color: Colors.white),
+                        enabledBorder: UnderlineInputBorder(
+                          borderSide: BorderSide(color: Colors.white),
+                        ),
+                      ),
+                      controller: _priceController,
+                      onSubmitted: (_) => _submitData(),
+                    ),
+                  ),
+                  IconButton(
+                    onPressed: () {
+                      setState(() {
+                        var price = double.parse(_priceController.text) + 0.01;
+                        _priceController.text = price.toStringAsFixed(2);
+                      });
+                    },
+                    iconSize: 60,
+                    icon: Icon(
+                      Icons.arrow_right,
+                      color: Theme.of(context).colorScheme.primary,
+                    ),
+                  )
+                ],
               ),
-              TextField(
-                keyboardType: TextInputType.number,
-                decoration: InputDecoration(
-                  labelText: 'Amount',
-                  labelStyle: TextStyle(color: Colors.white),
-                  enabledBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: Colors.white),
+              SizedBox(height: 10),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  IconButton(
+                    onPressed: () {
+                      setState(() {
+                        var amount = double.parse(_amountController.text) - 0.1;
+                        if (amount <= 0.1) {
+                          amount = 0.1;
+                        }
+                        _amountController.text = amount.toStringAsFixed(2);
+                      });
+                    },
+                    iconSize: 60,
+                    icon: Icon(
+                      Icons.arrow_left,
+                      color: Theme.of(context).colorScheme.primary,
+                    ),
                   ),
-                ),
-                controller: _amountController,
-                onSubmitted: (_) => _submitData(),
+                  Container(
+                    margin: EdgeInsets.all(10),
+                    width: 70,
+                    child: TextField(
+                      autofocus: true,
+                      textAlign: TextAlign.center,
+                      keyboardType: TextInputType.number,
+                      decoration: InputDecoration(
+                        contentPadding: EdgeInsets.only(top: 3),
+                        labelText: 'Amount',
+                        labelStyle: TextStyle(color: Colors.white),
+                        enabledBorder: UnderlineInputBorder(
+                          borderSide: BorderSide(color: Colors.white),
+                        ),
+                      ),
+                      controller: _amountController,
+                      onSubmitted: (_) => _submitData(),
+                    ),
+                  ),
+                  IconButton(
+                    onPressed: () {
+                      setState(() {
+                        var price = double.parse(_amountController.text) + 0.1;
+                        _amountController.text = price.toStringAsFixed(2);
+                      });
+                    },
+                    iconSize: 60,
+                    icon: Icon(
+                      Icons.arrow_right,
+                      color: Theme.of(context).colorScheme.primary,
+                    ),
+                  )
+                ],
               ),
               RaisedButton(
                 focusColor: Theme.of(context).colorScheme.primary,
-                child: widget.type == "buy" ? Text('BUY') : Text('SELL'),
+                child: Text('SATIN AL'),
                 textColor: Colors.black,
                 onPressed: () => _submitData(),
               ),

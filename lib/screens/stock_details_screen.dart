@@ -65,7 +65,7 @@ class _StockDetailsScreenState extends State<StockDetailsScreen> {
     }
   }
 
-  void _stockTransaction(type, price, amount) {
+  void _stockTransaction(price, amount) {
     var userId =
         Provider.of<AuthNotifier>(context, listen: false).getUserInfo['id'];
     const url = "http://54.196.2.46/api/transaction/add";
@@ -76,7 +76,7 @@ class _StockDetailsScreenState extends State<StockDetailsScreen> {
           'price': price,
           'amount': amount,
           'remaining': amount,
-          'kind': type
+          'kind': "buy"
         }),
         headers: {"Content-Type": "application/json"}).then((_) {});
   }
@@ -96,14 +96,13 @@ class _StockDetailsScreenState extends State<StockDetailsScreen> {
     );
   }
 
-  void startTransactionModal(BuildContext ctx, String type) {
+  void startTransactionModal(BuildContext ctx) {
     Navigator.of(ctx).push(
       new MaterialPageRoute<Null>(
         builder: (BuildContext context) {
           return StockTransactionModal(
             widget.stockName,
             _stockTransaction,
-            type,
             _stockDetails['price'].toStringAsFixed(2),
           );
         },
@@ -489,8 +488,7 @@ class _StockDetailsScreenState extends State<StockDetailsScreen> {
                                                       BorderRadius.circular(
                                                           20)),
                                               onPressed: () {
-                                                startTransactionModal(
-                                                    context, "buy");
+                                                startTransactionModal(context);
                                               },
                                               textTheme:
                                                   ButtonTextTheme.primary,
