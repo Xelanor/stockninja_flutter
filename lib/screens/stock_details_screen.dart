@@ -13,6 +13,8 @@ import '../widgets/charts/triple_chart.dart';
 import '../widgets/charts/env_chart.dart';
 import '../widgets/charts/ninja_chart.dart';
 import '../widgets/charts/ninja2_chart.dart';
+import '../widgets/charts/williams_chart.dart';
+import '../widgets/charts/aroon_chart.dart';
 
 import '../providers/authentication.dart';
 import '../widgets/details/stock_target_modal.dart';
@@ -533,6 +535,12 @@ class _StockDetailsScreenState extends State<StockDetailsScreen> {
                                 _stockDetails['env']['lower'],
                                 _graphPeriod,
                               ),
+                              WilliamsChart(
+                                  _stockDetails['williams'], _graphPeriod),
+                              AroonChart(
+                                  _stockDetails['aroon']['upper'],
+                                  _stockDetails['aroon']['lower'],
+                                  _graphPeriod),
                               NinjaChart(
                                 _stockDetails['ninja_index'],
                                 _graphPeriod,
