@@ -31,7 +31,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   }
 
   void deleteNotification(String id) {
-    const url = 'http://54.196.2.46/api/notification/delete';
+    const url = 'http://3.80.155.110/api/notification/delete';
     http.post(
       url,
       body: json.encode({'id': id}),
@@ -47,7 +47,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   void getNotifications() {
     var userId =
         Provider.of<AuthNotifier>(context, listen: false).getUserInfo['id'];
-    const url = 'http://54.196.2.46/api/notification';
+    const url = 'http://3.80.155.110/api/notification';
     setState(() {
       _isLoading = true;
     });

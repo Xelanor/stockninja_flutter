@@ -43,7 +43,7 @@ class _StockDetailsScreenState extends State<StockDetailsScreen> {
     var userId =
         Provider.of<AuthNotifier>(context, listen: false).getUserInfo['id'];
     if (type == "buy") {
-      const url = "http://54.196.2.46/api/portfolio/setbuytarget";
+      const url = "http://3.80.155.110/api/portfolio/setbuytarget";
       http.post(url,
           body: json.encode(
               {'name': widget.stockName, 'target': target, 'user': userId}),
@@ -55,7 +55,7 @@ class _StockDetailsScreenState extends State<StockDetailsScreen> {
     }
 
     if (type == "sell") {
-      const url = "http://54.196.2.46/api/portfolio/setselltarget";
+      const url = "http://3.80.155.110/api/portfolio/setselltarget";
       http.post(url,
           body: json.encode(
               {'name': widget.stockName, 'target': target, 'user': userId}),
@@ -70,7 +70,7 @@ class _StockDetailsScreenState extends State<StockDetailsScreen> {
   void _stockTransaction(price, amount) {
     var userId =
         Provider.of<AuthNotifier>(context, listen: false).getUserInfo['id'];
-    const url = "http://54.196.2.46/api/transaction/add";
+    const url = "http://3.80.155.110/api/transaction/add";
     http.post(url,
         body: json.encode({
           'user': userId,
@@ -117,7 +117,7 @@ class _StockDetailsScreenState extends State<StockDetailsScreen> {
     var userId =
         Provider.of<AuthNotifier>(context, listen: false).getUserInfo['id'];
     var now = DateTime.now();
-    var url = 'http://54.196.2.46/api/ticker/single-details';
+    var url = 'http://3.80.155.110/api/ticker/single-details';
     setState(() {
       _isLoading = true;
     });

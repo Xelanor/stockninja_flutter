@@ -5,6 +5,7 @@ import 'package:http/http.dart' as http;
 
 import '../widgets/global/daily_changes.dart';
 import '../widgets/global/indicator_search.dart';
+import '../widgets/global/ninja_simulation.dart';
 
 class GlobalScreen extends StatefulWidget {
   static const routeName = '/global-screen';
@@ -19,7 +20,7 @@ class _GlobalScreenState extends State<GlobalScreen> {
   var _events = [];
 
   void getEvents() {
-    const url = 'http://54.196.2.46/api/change';
+    const url = 'http://3.80.155.110/api/change';
     setState(() {
       _isLoading = true;
     });
@@ -70,53 +71,48 @@ class _GlobalScreenState extends State<GlobalScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return DefaultTabController(
-      length: 2,
-      child: Column(
-        children: <Widget>[
-          AppBar(
-            title: Text(
-              'Global',
-              style: TextStyle(
-                  color: Theme.of(context).colorScheme.onBackground,
-                  fontWeight: FontWeight.bold),
-            ),
-            backgroundColor: _events.length > 0
-                ? appBarColor
-                : Theme.of(context).colorScheme.surface,
-            brightness: Theme.of(context).brightness,
-          ),
-          Container(
-            height: 40,
-            child: TabBar(
-              indicatorColor: Colors.white60,
-              labelColor: Colors.white,
-              tabs: <Widget>[
-                Text(
-                  "Veriler",
-                  style: TextStyle(fontSize: 16),
-                ),
-                Text(
-                  "Arama",
-                  style: TextStyle(fontSize: 16),
-                ),
-              ],
-            ),
-          ),
-          Expanded(
-            child: _isLoading
-                ? Center(
-                    child: CircularProgressIndicator(
-                        valueColor: AlwaysStoppedAnimation(
-                            Theme.of(context).primaryColor)))
-                : TabBarView(
-                    children: <Widget>[
-                      DailyChanges(_events, onRefresh),
-                      IndicatorSearch(),
-                    ],
+    return SafeArea(
+      child: DefaultTabController(
+        length: 3,
+        child: Column(
+          children: <Widget>[
+            Container(
+              height: 40,
+              child: TabBar(
+                indicatorColor: Colors.white60,
+                labelColor: Colors.white,
+                tabs: <Widget>[
+                  Text(
+                    "Simulasyon",
+                    style: TextStyle(fontSize: 16),
                   ),
-          ),
-        ],
+                  Text(
+                    "Veriler",
+                    style: TextStyle(fontSize: 16),
+                  ),
+                  Text(
+                    "Arama",
+                    style: TextStyle(fontSize: 16),
+                  ),
+                ],
+              ),
+            ),
+            Expanded(
+              child: _isLoading
+                  ? Center(
+                      child: CircularProgressIndicator(
+                          valueColor: AlwaysStoppedAnimation(
+                              Theme.of(context).primaryColor)))
+                  : TabBarView(
+                      children: <Widget>[
+                        NinjaSimulation(),
+                        DailyChanges(_events, onRefresh),
+                        IndicatorSearch(),
+                      ],
+                    ),
+            ),
+          ],
+        ),
       ),
     );
   }

@@ -19,7 +19,7 @@ class _UserFirstInputState extends State<UserFirstInput> {
     var status = await OneSignal.shared.getPermissionSubscriptionState();
 
     var playerId = status.subscriptionStatus.userId;
-    const url = 'http://54.196.2.46/api/auth/signup';
+    const url = 'http://3.80.155.110/api/auth/signup';
     setState(() {
       _isLoading = true;
     });

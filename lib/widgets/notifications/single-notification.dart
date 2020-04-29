@@ -47,7 +47,7 @@ class SingleNotification extends StatelessWidget {
           )
           .whenComplete(refresh);
     }
-    const url = 'http://54.196.2.46/api/notification/viewed';
+    const url = 'http://3.80.155.110/api/notification/viewed';
     http.post(
       url,
       body: json.encode({'id': notification['_id']['\$oid']}),

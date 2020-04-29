@@ -26,7 +26,7 @@ class _InvestmentsScreenState extends State<InvestmentsScreen> {
   void getMyStocks() {
     var userId =
         Provider.of<AuthNotifier>(context, listen: false).getUserInfo['id'];
-    const url = 'http://54.196.2.46/api/transaction';
+    const url = 'http://3.80.155.110/api/transaction';
     setState(() {
       _isLoading = true;
     });
@@ -53,7 +53,7 @@ class _InvestmentsScreenState extends State<InvestmentsScreen> {
   void getTransactionHistory() {
     var userId =
         Provider.of<AuthNotifier>(context, listen: false).getUserInfo['id'];
-    const url = 'http://54.196.2.46/api/transaction/mixed';
+    const url = 'http://3.80.155.110/api/transaction/mixed';
     setState(() {
       _isLoading = true;
     });

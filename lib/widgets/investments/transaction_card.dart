@@ -22,7 +22,7 @@ class TransactionCard extends StatefulWidget {
 class _TransactionCardState extends State<TransactionCard> {
   void deleteTransaction() {
     var id = widget.transaction['id'];
-    const url = 'http://54.196.2.46/api/transaction/delete';
+    const url = 'http://3.80.155.110/api/transaction/delete';
     http.post(
       url,
       body: json.encode({'id': id}),
@@ -37,7 +37,7 @@ class _TransactionCardState extends State<TransactionCard> {
   void sellTransaction(price, amount) {
     var userId =
         Provider.of<AuthNotifier>(context, listen: false).getUserInfo['id'];
-    const url = "http://54.196.2.46/api/transaction/sell";
+    const url = "http://3.80.155.110/api/transaction/sell";
     var profit = (price - widget.transaction['purchased_price']) * amount;
     http.post(url,
         body: json.encode({

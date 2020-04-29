@@ -50,7 +50,7 @@ class DailyChanges extends StatelessWidget {
   }
 
   Future<void> refresh() {
-    const url = 'http://54.196.2.46/api/change';
+    const url = 'http://3.80.155.110/api/change';
     http.get(url).then(
       (response) {
         final extractedData = json.decode(response.body) as List<dynamic>;

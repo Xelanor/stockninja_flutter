@@ -51,7 +51,7 @@ class _HomepageScreenState extends State<HomepageScreen> {
               onPressed: () {
                 var userId = Provider.of<AuthNotifier>(context, listen: false)
                     .getUserInfo['id'];
-                const url = 'http://54.196.2.46/api/portfolio/delete';
+                const url = 'http://3.80.155.110/api/portfolio/delete';
                 var index = _myStocks
                     .indexWhere((stock) => stock['stockName'] == stockName);
                 setState(() {
@@ -93,7 +93,7 @@ class _HomepageScreenState extends State<HomepageScreen> {
   void getMyStocks() {
     var userId =
         Provider.of<AuthNotifier>(context, listen: false).getUserInfo['id'];
-    const url = 'http://54.196.2.46/api/portfolio';
+    const url = 'http://3.80.155.110/api/portfolio';
     setState(() {
       _isLoading = true;
     });
@@ -170,7 +170,7 @@ class _HomepageScreenState extends State<HomepageScreen> {
   Future<void> refresh() {
     var userId =
         Provider.of<AuthNotifier>(context, listen: false).getUserInfo['id'];
-    const url = 'http://54.196.2.46/api/portfolio';
+    const url = 'http://3.80.155.110/api/portfolio';
     http.post(
       url,
       body: json.encode({'user': userId}),

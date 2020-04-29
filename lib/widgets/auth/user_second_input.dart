@@ -21,7 +21,7 @@ class _UserSecondInputState extends State<UserSecondInput> {
   final _passCodeController = TextEditingController();
 
   void passLogin(String email) {
-    var url = 'http://54.196.2.46/api/auth/login/${_passCodeController.text}';
+    var url = 'http://3.80.155.110/api/auth/login/${_passCodeController.text}';
     http.post(
       url,
       body: json.encode({'email': email}),

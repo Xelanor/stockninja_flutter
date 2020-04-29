@@ -26,7 +26,7 @@ class _SearchScreenState extends State<SearchScreen>
   void addToMyStocks(stockName) {
     var userId =
         Provider.of<AuthNotifier>(context, listen: false).getUserInfo['id'];
-    const url = 'http://54.196.2.46/api/portfolio/add';
+    const url = 'http://3.80.155.110/api/portfolio/add';
     http.post(
       url,
       body: json.encode({'user': userId, "name": stockName}),
@@ -95,8 +95,8 @@ class _SearchScreenState extends State<SearchScreen>
   }
 
   void getMyStocks() {
-    const stockUrl = 'http://54.196.2.46/api/ticker/all';
-    const currencyUrl = 'http://54.196.2.46/api/ticker/currencies';
+    const stockUrl = 'http://3.80.155.110/api/ticker/all';
+    const currencyUrl = 'http://3.80.155.110/api/ticker/currencies';
     var url;
     setState(() {
       _showedStocks.clear();
@@ -232,7 +232,7 @@ class _SearchScreenState extends State<SearchScreen>
   }
 
   Future<void> refresh() {
-    const url = 'http://54.196.2.46/api/ticker/all';
+    const url = 'http://3.80.155.110/api/ticker/all';
     http.get(url).then(
       (response) {
         final extractedData = json.decode(response.body) as List<dynamic>;
