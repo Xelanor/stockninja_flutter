@@ -15,9 +15,11 @@ class _IndicatorSearchState extends State<IndicatorSearch> {
   bool _isLoading = false;
   var _stocks = [];
 
-  int _rsiValue = 40;
-  int _ninjaValue = 0;
-  double _pdDdValue = 5.0;
+  Map _rsiValues = {"lower": 30, "upper": 70};
+  Map _ninjaValues = {"lower": 0, "upper": 5};
+  Map _ninja_s_Values = {"lower": 0, "upper": 5};
+  Map _pdDdValues = {"lower": 5, "upper": 10};
+  Map _fkValues = {"lower": 0, "upper": 20};
 
   void fetchIndicators() {
     var url = 'http://3.80.155.110/api/ticker/search';
@@ -25,11 +27,15 @@ class _IndicatorSearchState extends State<IndicatorSearch> {
       _isLoading = true;
     });
     http.post(url,
-        body: json.encode({
-          'rsi': _rsiValue,
-          'ninja': _ninjaValue / 100,
-          'pd_dd': _pdDdValue
-        }),
+        body: json.encode(
+          {
+            'rsi': _rsiValues,
+            'ninja': _ninjaValues,
+            'ninja_s': _ninja_s_Values,
+            'pd_dd': _pdDdValues,
+            'fk': _fkValues,
+          },
+        ),
         headers: {"Content-Type": "application/json"}).then(
       (response) {
         final extractedData = json.decode(response.body) as List<dynamic>;
@@ -61,19 +67,22 @@ class _IndicatorSearchState extends State<IndicatorSearch> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
                     Text(
-                      'RSI MAX Value: $_rsiValue',
+                      'RSI Min - Max',
                       style: TextStyle(fontSize: 15),
                     ),
                     Expanded(
-                      child: Slider(
-                        value: _rsiValue.toDouble(),
+                      child: RangeSlider(
+                        values: RangeValues(_rsiValues["lower"].toDouble(),
+                            _rsiValues["upper"].toDouble()),
                         min: 0,
                         max: 100,
                         divisions: 100,
-                        label: '$_rsiValue',
-                        onChanged: (double newValue) {
+                        labels: RangeLabels(
+                            '${_rsiValues["lower"]}', '${_rsiValues["upper"]}'),
+                        onChanged: (RangeValues newRange) {
                           setState(() {
-                            _rsiValue = newValue.round();
+                            _rsiValues["lower"] = newRange.start.round();
+                            _rsiValues["upper"] = newRange.end.round();
                           });
                         },
                       ),
@@ -85,19 +94,22 @@ class _IndicatorSearchState extends State<IndicatorSearch> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
                     Text(
-                      'NINJA MAX Value: % $_ninjaValue',
+                      'NINJA Min - Max',
                       style: TextStyle(fontSize: 15),
                     ),
                     Expanded(
-                      child: Slider(
-                        value: _ninjaValue.toDouble(),
-                        min: -20,
+                      child: RangeSlider(
+                        values: RangeValues(_ninjaValues["lower"].toDouble(),
+                            _ninjaValues["upper"].toDouble()),
+                        min: -80,
                         max: 20,
                         divisions: 40,
-                        label: '$_ninjaValue',
-                        onChanged: (double newValue) {
+                        labels: RangeLabels('${_ninjaValues["lower"]}',
+                            '${_ninjaValues["upper"]}'),
+                        onChanged: (RangeValues newRange) {
                           setState(() {
-                            _ninjaValue = newValue.round();
+                            _ninjaValues["lower"] = newRange.start.round();
+                            _ninjaValues["upper"] = newRange.end.round();
                           });
                         },
                       ),
@@ -109,20 +121,76 @@ class _IndicatorSearchState extends State<IndicatorSearch> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
                     Text(
-                      'PD/DD Max Value: $_pdDdValue',
+                      'NINJA 2 Min - Max',
                       style: TextStyle(fontSize: 15),
                     ),
                     Expanded(
-                      child: Slider(
-                        value: _pdDdValue.toDouble(),
+                      child: RangeSlider(
+                        values: RangeValues(_ninja_s_Values["lower"].toDouble(),
+                            _ninja_s_Values["upper"].toDouble()),
+                        min: -80,
+                        max: 20,
+                        divisions: 40,
+                        labels: RangeLabels('${_ninja_s_Values["lower"]}',
+                            '${_ninja_s_Values["upper"]}'),
+                        onChanged: (RangeValues newRange) {
+                          setState(() {
+                            _ninja_s_Values["lower"] = newRange.start.round();
+                            _ninja_s_Values["upper"] = newRange.end.round();
+                          });
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(height: 8),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    Text(
+                      'PD/DD Min - Max',
+                      style: TextStyle(fontSize: 15),
+                    ),
+                    Expanded(
+                      child: RangeSlider(
+                        values: RangeValues(_pdDdValues["lower"].toDouble(),
+                            _pdDdValues["upper"].toDouble()),
                         min: 0.0,
                         max: 30.0,
                         divisions: 300,
-                        label: '$_pdDdValue',
-                        onChanged: (double newValue) {
+                        labels: RangeLabels('${_pdDdValues["lower"]}',
+                            '${_pdDdValues["upper"]}'),
+                        onChanged: (RangeValues newRange) {
                           setState(() {
-                            _pdDdValue =
-                                double.parse(newValue.toStringAsFixed(1));
+                            _pdDdValues["lower"] = newRange.start.round();
+                            _pdDdValues["upper"] = newRange.end.round();
+                          });
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(height: 8),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    Text(
+                      'F/K Min - Max',
+                      style: TextStyle(fontSize: 15),
+                    ),
+                    Expanded(
+                      child: RangeSlider(
+                        values: RangeValues(_fkValues["lower"].toDouble(),
+                            _fkValues["upper"].toDouble()),
+                        min: 0.0,
+                        max: 50,
+                        divisions: 100,
+                        labels: RangeLabels(
+                            '${_fkValues["lower"]}', '${_fkValues["upper"]}'),
+                        onChanged: (RangeValues newRange) {
+                          setState(() {
+                            _fkValues["lower"] = newRange.start.round();
+                            _fkValues["upper"] = newRange.end.round();
                           });
                         },
                       ),

@@ -15,6 +15,7 @@ import '../widgets/charts/ninja_chart.dart';
 import '../widgets/charts/ninja2_chart.dart';
 import '../widgets/charts/williams_chart.dart';
 import '../widgets/charts/aroon_chart.dart';
+import '../widgets/charts/macd_chart.dart';
 
 import '../providers/authentication.dart';
 import '../widgets/details/stock_target_modal.dart';
@@ -540,6 +541,11 @@ class _StockDetailsScreenState extends State<StockDetailsScreen> {
                               AroonChart(
                                   _stockDetails['aroon']['upper'],
                                   _stockDetails['aroon']['lower'],
+                                  _graphPeriod),
+                              MacdChart(
+                                  _stockDetails['macd']['macd'],
+                                  _stockDetails['macd']['signal'],
+                                  _stockDetails['macd']['histogram'],
                                   _graphPeriod),
                               NinjaChart(
                                 _stockDetails['ninja_index'],

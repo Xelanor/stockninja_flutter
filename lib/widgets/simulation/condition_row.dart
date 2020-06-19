@@ -2,6 +2,10 @@ import 'package:flutter/material.dart';
 
 import '../simulation/buy_conditions/price_buy_condition.dart';
 import '../simulation/buy_conditions/triple_buy_condition.dart';
+import '../simulation/buy_conditions/rsi_buy_condition.dart';
+import '../simulation/buy_conditions/trace_sell_condition.dart';
+import '../simulation/buy_conditions/aroon_buy_condition.dart';
+import '../simulation/buy_conditions/after_sell_condition.dart';
 
 class ConditionRow extends StatelessWidget {
   final String conditionName;
@@ -34,6 +38,26 @@ class ConditionRow extends StatelessWidget {
       case "triple":
         {
           return TripleBuyCondition(conditions, changeCondition);
+        }
+        break;
+      case "rsi":
+        {
+          return RsiBuyCondition(conditions, changeCondition);
+        }
+        break;
+      case "trace":
+        {
+          return TraceSellCondition(conditions, changeCondition);
+        }
+        break;
+      case "aroon":
+        {
+          return AroonBuyCondition(conditions, changeCondition);
+        }
+        break;
+      case "after_sell":
+        {
+          return AfterSellCondition(conditions, changeCondition);
         }
         break;
     }

@@ -5,6 +5,7 @@ import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 
 import './consecutive-analysis-info.dart';
+import './simulation-analysis-info.dart';
 import '../../screens/stock_details_screen.dart';
 
 class SingleNotification extends StatelessWidget {
@@ -41,6 +42,18 @@ class SingleNotification extends StatelessWidget {
             MaterialPageRoute<Null>(
               builder: (BuildContext context) {
                 return ConsecutiveAnalysisInfo(increasing, decreasing);
+              },
+              fullscreenDialog: true,
+            ),
+          )
+          .whenComplete(refresh);
+    } else if (notification['category'] == "simulation") {
+      var stocks = notification['information']['tickers'];
+      Navigator.of(ctx)
+          .push(
+            MaterialPageRoute<Null>(
+              builder: (BuildContext context) {
+                return SimulationAnalysisInfo(stocks);
               },
               fullscreenDialog: true,
             ),

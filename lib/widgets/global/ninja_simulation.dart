@@ -2,11 +2,13 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
 
 import '../../widgets/charts/simulation_chart.dart';
 import '../../widgets/simulation/condition_row.dart';
 import '../../widgets/simulation/widgets/text_button.dart';
 import '../../widgets/simulation/select_stocks.dart';
+import '../../providers/authentication.dart';
 
 class NinjaSimulation extends StatefulWidget {
   @override
@@ -25,18 +27,46 @@ class _NinjaSimulationState extends State<NinjaSimulation> {
       "expanded": false,
     },
     "triple": {
+      "price": 4,
+      "short_value": 3,
+      "medium_value": 2,
+      "long_value": 1,
+      "price_compare": "",
+      "short_compare": "",
+      "medium_compare": "",
+      "long_compare": "",
       "short": 7,
+      "medium": 14,
       "long": 21,
-      "first": "",
-      "second": "",
-      "third": "",
-      "first_compare": "",
-      "second_compare": "",
-      "first_percentage": 1.0,
-      "second_percentage": 1.0,
       "checked": false,
       "expanded": false,
-    }
+    },
+    "rsi": {
+      "first_compare": "",
+      "second_compare": "",
+      "third_compare": "",
+      "rsi_value": 70,
+      "rsi_compare": "",
+      "checked": false,
+      "expanded": false,
+    },
+    "aroon": {
+      "up_lower": 0,
+      "up_upper": 100,
+      "down_lower": 0,
+      "down_upper": 100,
+      "aroon_compare": "",
+      "uptrend": "",
+      "downtrend": "",
+      "checked": false,
+      "expanded": false,
+    },
+    "after_sell": {
+      "percent": 0,
+      "period": 0,
+      "checked": false,
+      "expanded": false,
+    },
   };
 
   Map sellConditions = {
@@ -47,8 +77,39 @@ class _NinjaSimulationState extends State<NinjaSimulation> {
       "checked": false,
       "expanded": false,
     },
+    "triple": {
+      "price": 1,
+      "short_value": 2,
+      "medium_value": 3,
+      "long_value": 4,
+      "price_compare": "",
+      "short_compare": "",
+      "medium_compare": "",
+      "long_compare": "",
+      "short": 7,
+      "medium": 14,
+      "long": 21,
+      "checked": false,
+      "expanded": false,
+    },
+    "rsi": {
+      "first_compare": "",
+      "second_compare": "",
+      "third_compare": "",
+      "rsi_value": 70,
+      "rsi_compare": "",
+      "checked": false,
+      "expanded": false,
+    },
+    "trace": {
+      "value": 0,
+      "checked": false,
+      "expanded": false,
+    }
   };
   var chartData = [];
+  var buyDays = [];
+  var sellDays = [];
 
   void changeStocks(category, condition, value) {
     setState(() {
@@ -128,7 +189,11 @@ class _NinjaSimulationState extends State<NinjaSimulation> {
     const url = 'http://3.80.155.110/api/simulation';
     http.post(
       url,
-      body: json.encode({'buy': buyConditions, 'sell': sellConditions}),
+      body: json.encode({
+        'buy': buyConditions,
+        'sell': sellConditions,
+        "period": "yearly",
+      }),
       headers: {"Content-Type": "application/json"},
     ).then(
       (response) {
@@ -136,7 +201,30 @@ class _NinjaSimulationState extends State<NinjaSimulation> {
             json.decode(response.body) as Map<dynamic, dynamic>;
         setState(() {
           chartData = extractedData['values'];
+          buyDays = extractedData['buy_days'];
+          sellDays = extractedData['sell_days'];
         });
+      },
+    ).catchError((err) {
+      print(err);
+    });
+  }
+
+  void saveSimulationRecords() {
+    var userId =
+        Provider.of<AuthNotifier>(context, listen: false).getUserInfo['id'];
+    const url = 'http://3.80.155.110/api/simulation/save';
+    http.post(
+      url,
+      body: json.encode({
+        'buy': buyConditions,
+        'sell': sellConditions,
+        'user': userId,
+      }),
+      headers: {"Content-Type": "application/json"},
+    ).then(
+      (response) {
+        print("Done");
       },
     ).catchError((err) {
       print(err);
@@ -232,6 +320,26 @@ class _NinjaSimulationState extends State<NinjaSimulation> {
             buyConditions["triple"],
             changeBuyCondition,
           ),
+          ConditionRow(
+            "RSI Index",
+            buyConditions["rsi"]["checked"],
+            buyConditions["rsi"]["expanded"],
+            "rsi",
+            expandBuyCondition,
+            checkBuyCondition,
+            buyConditions["rsi"],
+            changeBuyCondition,
+          ),
+          ConditionRow(
+            "Aroon Index",
+            buyConditions["aroon"]["checked"],
+            buyConditions["aroon"]["expanded"],
+            "aroon",
+            expandBuyCondition,
+            checkBuyCondition,
+            buyConditions["aroon"],
+            changeBuyCondition,
+          ),
           // SimBuyConditions(buyConditions, changeBuyCondition),
           SizedBox(height: 40),
           Container(
@@ -251,25 +359,112 @@ class _NinjaSimulationState extends State<NinjaSimulation> {
             sellConditions["price"],
             changeSellCondition,
           ),
+          ConditionRow(
+            "Triple Index",
+            sellConditions["triple"]["checked"],
+            sellConditions["triple"]["expanded"],
+            "triple",
+            expandSellCondition,
+            checkSellCondition,
+            sellConditions["triple"],
+            changeSellCondition,
+          ),
+          ConditionRow(
+            "RSI Index",
+            sellConditions["rsi"]["checked"],
+            sellConditions["rsi"]["expanded"],
+            "rsi",
+            expandSellCondition,
+            checkSellCondition,
+            sellConditions["rsi"],
+            changeSellCondition,
+          ),
+          ConditionRow(
+            "İz Süren",
+            sellConditions["trace"]["checked"],
+            sellConditions["trace"]["expanded"],
+            "trace",
+            expandSellCondition,
+            checkSellCondition,
+            sellConditions["trace"],
+            changeSellCondition,
+          ),
           SizedBox(height: 40),
-          ButtonTheme(
-            minWidth: 200,
-            child: RaisedButton(
-              onPressed: _onLoading,
-              color: Theme.of(context).colorScheme.primaryVariant,
-              child: Text(
-                'Çalıştır',
-                style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 18,
-                    fontWeight: FontWeight.w600),
-              ),
+          Container(
+            alignment: Alignment.centerLeft,
+            child: Text(
+              'SATIM SONRASI',
+              style: TextStyle(fontSize: 16, color: Colors.grey),
             ),
           ),
+          ConditionRow(
+            "Bekleme",
+            buyConditions["after_sell"]["checked"],
+            buyConditions["after_sell"]["expanded"],
+            "after_sell",
+            expandBuyCondition,
+            checkBuyCondition,
+            buyConditions["after_sell"],
+            changeBuyCondition,
+          ),
+          SizedBox(height: 40),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: <Widget>[
+                ButtonTheme(
+                  minWidth: 150,
+                  child: RaisedButton(
+                    onPressed: _onLoading,
+                    color: Theme.of(context).colorScheme.primaryVariant,
+                    child: Text(
+                      'Çalıştır',
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 18,
+                          fontWeight: FontWeight.w600),
+                    ),
+                  ),
+                ),
+                ButtonTheme(
+                  minWidth: 150,
+                  child: RaisedButton(
+                    onPressed: saveSimulationRecords,
+                    color: Theme.of(context).colorScheme.primary,
+                    child: Text(
+                      'Kaydet',
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 18,
+                          fontWeight: FontWeight.w600),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+
           chartData.length == 0
               ? Text("YOK")
-              : Container(
-                  child: SimulationChart(chartData),
+              : Column(
+                  children: <Widget>[
+                    Container(
+                      child: SimulationChart(chartData),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Container(
+                        child: Text('Alım Günleri: ${buyDays.toString()}'),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Container(
+                        child: Text('Satım Günleri: ${sellDays.toString()}'),
+                      ),
+                    ),
+                  ],
                 )
         ],
       ),
